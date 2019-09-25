@@ -14,7 +14,10 @@ namespace BLL.BLLs
     public class UserBLL : BaseBLL<UserBE,UserViewModel>
     {
         
-        
+        public UserBLL()
+        {
+            this.Dal = new UserDAL();
+        }
 
         public UserViewModel LogIn(UserViewModel viewModel)
         {

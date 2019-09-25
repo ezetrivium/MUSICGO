@@ -18,7 +18,7 @@ namespace BLL
         where TViewModel : BaseViewModel
     {
         #region Fields
-        protected readonly IDAL<TEntity> Dal;
+        protected IDAL<TEntity> Dal;
         protected static readonly ILog Log = LogManager.GetLogger(GlobalValues.WebLoggerName);
         #endregion Fields
 

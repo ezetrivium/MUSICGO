@@ -12,6 +12,11 @@ namespace BLL.BLLs
 {
     public class LanguageBLL : BaseBLL<LanguageBE,LanguageViewModel>
     {
+        public LanguageBLL()
+        {
+            Dal = new LanguageDAL();
+        }
+
         public LanguageBE GetUserLanguage(UserBE user)
         {
             LanguageDAL languadeDal = new LanguageDAL();

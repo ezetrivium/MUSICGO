@@ -12,6 +12,12 @@ namespace BLL.BLLs
 {
     public class PermissionsBLL : BaseBLL<PermissionBE,PermissionViewModel>
     {
+        public PermissionsBLL()
+        {
+            Dal = new PermissionDAL();
+        }
+
+
         public IEnumerable<PermissionBE> GetUserPermission(UserBE user)
         {
             PermissionDAL permisoDAL = new PermissionDAL();
