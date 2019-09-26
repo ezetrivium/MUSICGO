@@ -72,7 +72,7 @@ namespace BLL.BLLs
         }
 
 
-        private UserBE CheckUserName(UserBE user)
+        public UserBE CheckUserName(UserBE user)
         {
             UserDAL userDAL = new UserDAL();
             
@@ -98,5 +98,9 @@ namespace BLL.BLLs
             }
             return false;
         }
+
+
+
+
     }
 }

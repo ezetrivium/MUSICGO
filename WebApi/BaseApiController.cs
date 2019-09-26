@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace Institucional.WebApi
 {
-    public class BaseApiController : ApiController
+    public abstract class BaseApiController : ApiController
     {
         #region Fields
 
