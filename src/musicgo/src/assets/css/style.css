@@ -1,0 +1,49 @@
+body{
+    background-color:RGB(23,21,32)
+}
+
+h2 {
+    color: white;
+  }
+
+.button-primary{
+    padding: 0 20px;
+    min-width: 160px;
+    height: 50px;
+    font-size: 16px;
+    color: #fff;
+    background-color: inherit;
+} 
+
+.card-primary{
+    border-color: rgb(51, 51, 51)
+}
+
+
+.input-text-primary{
+    background-color:RGB(23,21,32);
+    color:white;
+    
+}
+
+.input-text-primary:focus{
+    background-color:RGB(23,21,32);
+    color:white;
+}
+
+
+.alert{
+    background-color: inherit !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    border: none !important ;
+}
+
+
+.alert-dismissible .close{
+    padding-top: 0;
+    padding-bottom: 1px !important;
+ 
+}
+
+

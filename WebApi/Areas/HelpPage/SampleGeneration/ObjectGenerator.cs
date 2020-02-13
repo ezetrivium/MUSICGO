@@ -25,7 +25,7 @@ namespace WebApi.Areas.HelpPage
         /// Key value pairs: <see cref="KeyValuePair{TKey,TValue}"/>
         /// Tuples: <see cref="Tuple{T1}"/>, <see cref="Tuple{T1,T2}"/>, etc
         /// Dictionaries: <see cref="IDictionary{TKey,TValue}"/> or anything deriving from <see cref="IDictionary{TKey,TValue}"/>.
-        /// Collections: <see cref="IList{T}"/>, <see cref="IEnumerable{T}"/>, <see cref="ICollection{T}"/>, <see cref="IList"/>, <see cref="IEnumerable"/>, <see cref="ICollection"/> or anything deriving from <see cref="ICollection{T}"/> or <see cref="IList"/>.
+        /// Collections: <see cref="IList{T}"/>, <see cref="IList{T}"/>, <see cref="ICollection{T}"/>, <see cref="IList"/>, <see cref="IList"/>, <see cref="ICollection"/> or anything deriving from <see cref="ICollection{T}"/> or <see cref="IList"/>.
         /// Queryables: <see cref="IQueryable"/>, <see cref="IQueryable{T}"/>.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -66,7 +66,7 @@ namespace WebApi.Areas.HelpPage
                 }
 
                 if (type == typeof(IList) ||
-                    type == typeof(IEnumerable) ||
+                    type == typeof(IList) ||
                     type == typeof(ICollection))
                 {
                     return GenerateCollection(typeof(ArrayList), DefaultCollectionSize, createdObjectReferences);
@@ -123,7 +123,7 @@ namespace WebApi.Areas.HelpPage
             if (genericArguments.Length == 1)
             {
                 if (genericTypeDefinition == typeof(IList<>) ||
-                    genericTypeDefinition == typeof(IEnumerable<>) ||
+                    genericTypeDefinition == typeof(IList<>) ||
                     genericTypeDefinition == typeof(ICollection<>))
                 {
                     Type collectionType = typeof(List<>).MakeGenericType(genericArguments);
@@ -298,12 +298,12 @@ namespace WebApi.Areas.HelpPage
             }
             if (isGeneric)
             {
-                Type argumentType = typeof(IEnumerable<>).MakeGenericType(queryableType.GetGenericArguments());
+                Type argumentType = typeof(IList<>).MakeGenericType(queryableType.GetGenericArguments());
                 MethodInfo asQueryableMethod = typeof(Queryable).GetMethod("AsQueryable", new[] { argumentType });
                 return asQueryableMethod.Invoke(null, new[] { list });
             }
 
-            return Queryable.AsQueryable((IEnumerable)list);
+            return Queryable.AsQueryable((IList)list);
         }
 
         private static object GenerateCollection(Type collectionType, int size, Dictionary<Type, object> createdObjectReferences)

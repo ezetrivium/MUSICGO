@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilities;
+using Utilities.Exceptions;
 using ViewModels.ViewModels;
 
 namespace BLL.BLLs
@@ -24,46 +25,63 @@ namespace BLL.BLLs
             try
             {
                 UserBE userBE = Mapper.Map<UserViewModel, UserBE>(viewModel);
-                PermissionsBLL permissions = new PermissionsBLL();
+                PermissionsBLL permissionBLL = new PermissionsBLL();
                 BinnacleSL binnacleSL = new BinnacleSL();
                 UserBE userLogin = new UserBE();
                 Encryptor encryptor = new Encryptor();
                 DVVerifier dVVerifier = new DVVerifier();
                 userLogin = CheckUserName(userBE);
-                if (encryptor.CheckEncryption(userBE.Password, userLogin.Password))
+                if (userLogin.Id != Guid.Empty)
                 {
-                    userLogin.Permissions = permissions.GetUserPermission(userLogin);
-                    if (VerifyLoginPermission(userLogin))
+                    if (encryptor.CheckEncryption(encryptor.Encrypt(viewModel.Password), userLogin.Password))
                     {
-                        if (!userLogin.Blocked)
+                        userLogin.Permissions = permissionBLL.GetUserPermission(userLogin);
+                        if (VerifyLoginPermission(userLogin.Permissions))
                         {
-                            binnacleSL.AddBinnacle(new BinnacleBE()
+                            if (!userLogin.Blocked)
                             {
-                                User = userLogin,
-                                Description = "Login",
-                            });
+                                binnacleSL.AddBinnacle(new BinnacleBE()
+                                {
+                                    User = userLogin,
+                                    Description = "Login",
+                                });
 
-                            dVVerifier.DVVerify();
+                                dVVerifier.DVVerify();
 
-                            userLogin.Language = new LanguageBLL().GetUserLanguage(userLogin);
+                                userLogin.Language = new LanguageBLL().GetUserLanguage(userLogin);
 
-                            return Mapper.Map<UserBE,UserViewModel>(userLogin);
+                                UserViewModel uservm = Mapper.Map<UserBE, UserViewModel>(userLogin);
+
+                                permissionBLL.CastPermissions(userLogin.Permissions, uservm.Permissions);
+
+
+                                return uservm;
+                            }
+                            else
+                            {
+                                throw new BusinessException(Messages.User_Blocked);
+                            }
                         }
                         else
                         {
-                            throw new Exception(Messages.User_Blocked);
+                            throw new BusinessException(Messages.LoginNotOk);
                         }
+
                     }
                     else
                     {
-                        throw new Exception(Messages.LoginNotOk);
+                        throw new BusinessException(Messages.PasswordNotOk);
                     }
-
                 }
                 else
                 {
-                    throw new Exception(Messages.PasswordNotOk);
+                    throw new BusinessException(Messages.UserNotExists);
                 }
+                
+            }
+            catch(BusinessException ex)
+            {
+                throw ex;
             }
             catch(Exception ex)
             {
@@ -76,27 +94,36 @@ namespace BLL.BLLs
         {
             UserDAL userDAL = new UserDAL();
             
-            user = userDAL.GetUserByUserName(user);
-            if(user.UserName != "")
-            {
-                return user;
-            }
-            else
-            {
-                throw new Exception(Messages.UserNotExists);
-            }
+            return userDAL.GetUserByUserName(user);
+            
         }
 
-        private bool VerifyLoginPermission(UserBE user)
+        private bool VerifyLoginPermission(IList<PermissionBE> permissions)
         {
-            foreach(PermissionBE per in user.Permissions)
-            {
-                if (per.Check("Login"))
+            bool result = false;
+            foreach (var per in permissions)
+            {            
+                 if (typeof(PermissionBE) == per.GetType())
+                 {
+                     if (per.Check("Login"))
+                     {
+                         result = true;
+                     }
+                 }
+                 else
+                 {
+                     PermissionsGroupBE pg = (PermissionsGroupBE)per;
+                       
+                     result = VerifyLoginPermission(pg.Permissions);
+                 }
+                if (result)
                 {
-                    return true;
-                }              
+                    break;
+                }
+                
             }
-            return false;
+
+            return result;
         }
 
 

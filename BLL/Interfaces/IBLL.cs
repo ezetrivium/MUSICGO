@@ -14,7 +14,7 @@ namespace BLL.Interfaces
 
         bool Delete(Guid id);
 
-        IEnumerable<TViewModel> Get();
+        IList<TViewModel> Get();
 
         TViewModel GetById(Guid id);
 

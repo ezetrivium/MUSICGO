@@ -14,7 +14,7 @@ namespace DAL.Interfaces
 
         bool Delete(Guid id);
 
-        IEnumerable<TEntity> Get();
+        IList<TEntity> Get();
 
         TEntity GetById(Guid id);
 

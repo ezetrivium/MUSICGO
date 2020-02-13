@@ -23,7 +23,7 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PermissionBE> Get()
+        public IList<PermissionBE> Get()
         {
             var dbContext = new DBContext();
             var parameters = Array.Empty<SqlParameter>();
@@ -48,44 +48,45 @@ namespace DAL.Mappers
         #endregion
 
 
-        public IEnumerable<PermissionBE> GetUserPermissions(UserBE user)
+        public IList<PermissionBE> GetUserPermissions(UserBE user)
         {
             var dbContext = new DBContext();
-            var parameters = Array.Empty<SqlParameter>();
             DataSet dataSet;
 
-            
-            parameters = new SqlParameter[1];
+            var parameters = new SqlParameter[1];
             parameters[0] = dbContext.CreateParameters("@UserID", user.Id.ToString());
+
+
             dataSet = dbContext.Read("GetUserPermissions", parameters);
 
-            return ReturnPermissionsTree(dataSet);
+            var roots = ReturnPermissionsTree(dataSet);
+           
+            return roots;
             
         }
 
 
-
-        private IEnumerable<PermissionBE> ReturnPermissionsTree(DataSet dataSet)
+        private IList<PermissionBE> ReturnPermissionsTree(DataSet dataSet)
         {
             List<PermissionBE> permissions = new List<PermissionBE>();
             List<PermissionBE> roots = new List<PermissionBE>();
 
             foreach (DataRow dr in dataSet.Tables[0].Rows)
             {
-                Guid parent = Guid.Parse(dr["ParentID"].ToString()) == Guid.Empty ? Guid.Empty : Guid.Parse(dr["ParentID"].ToString());
+                Guid parent = dr["ParentID"].ToString() == string.Empty ? Guid.Empty : Guid.Parse(dr["ParentID"].ToString());
                 PermissionBE permission;
                 bool exists = false;
 
-                foreach(PermissionBE per in permissions)
+                foreach (PermissionBE per in permissions)
                 {
-                    if(per.Id == Guid.Parse(dr["PermissionID"].ToString()))
+                    if (per.Id == Guid.Parse(dr["PermissionID"].ToString()))
                     {
                         exists = true;
                     }
                 }
                 if (!exists)
                 {
-                    
+
                     if (Convert.ToBoolean(dr["IsGroup"]))
                     {
                         permission = new PermissionsGroupBE()
@@ -101,8 +102,8 @@ namespace DAL.Mappers
                             Id = Guid.Parse(dr["PermissionID"].ToString()),
                             Name = dr["Name"].ToString()
                         };
-                    }                      
-                        
+                    }
+
                     if (parent == Guid.Empty)
                     {
                         roots.Add(permission);
@@ -112,14 +113,15 @@ namespace DAL.Mappers
                         permissions.Add(permission);
                     }
                 }
-                
+
             }
 
-            if(roots.ToList().Count > 0)
+            if (roots.ToList().Count > 0)
             {
-                foreach(PermissionsGroupBE root in roots)
+                foreach (var root in roots)
                 {
-                    AddChildren(permissions, dataSet, root);
+                    if(typeof(PermissionsGroupBE) == root.GetType())
+                    AddChildren(permissions, dataSet, (PermissionsGroupBE)root);
                 }
             }
 
@@ -127,21 +129,35 @@ namespace DAL.Mappers
         }
 
 
+      
 
         private static void AddChildren(List<PermissionBE> permissions, DataSet ds, PermissionsGroupBE node)
         {
 
             foreach (var per in permissions)
-            {              
-               if(node.Id == per.Id)
-               {                
-                  node.Permissions.ToList().Add(per);                                
-                  foreach(PermissionsGroupBE child in node.Permissions)
-                  {
-                        AddChildren(permissions, ds, child);
-                  }
-    
+            {
+               List<PermissionBE> list = new List<PermissionBE>(); 
+               foreach(DataRow dr in ds.Tables[0].Rows)
+               {
+                    if (node.Id.ToString() == dr["ParentID"].ToString())
+                    {
+                        if (dr["PermissionID"].ToString() == per.Id.ToString())
+                        {
+                            if (!node.Permissions.Any(p => p == per))
+                            {
+                                node.Permissions.Add(per);
+                            }                           
+                            foreach (var child in node.Permissions)
+                            {
+                                if (typeof(PermissionsGroupBE) == child.GetType())
+                                    AddChildren(permissions, ds, (PermissionsGroupBE)child);
+                               
+                            }
+                            break;
+                        }                      
+                    }
                }
+               
             }
         }
     }

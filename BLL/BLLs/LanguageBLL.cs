@@ -20,7 +20,7 @@ namespace BLL.BLLs
         public LanguageBE GetUserLanguage(UserBE user)
         {
             LanguageDAL languadeDal = new LanguageDAL();
-            return languadeDal.GetById(user.Id);
+            return languadeDal.GetById(user.Language.Id);
         }
     }
 }

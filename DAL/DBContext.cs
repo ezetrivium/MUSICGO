@@ -166,6 +166,18 @@ namespace DAL
             return parameter;
         }
 
+        public SqlParameter CreateNullParameters(string paramName)
+        {
+            var parameter = new SqlParameter
+            {
+                ParameterName = paramName,
+                Value = DBNull.Value,
+                SqlDbType = SqlDbType.NVarChar
+            };
+
+            return parameter;
+        }
+
         public SqlParameter CreateParameters(string paramName, int paramValue)
         {
             var parameter = new SqlParameter

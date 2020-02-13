@@ -12,11 +12,11 @@ namespace SL
 {
     public class BinnacleSL
     {
-        public IEnumerable<BinnacleViewModel> GetBinnacle(DateTime? dateTo, DateTime? dateFrom, string userName)
+        public IList<BinnacleViewModel> GetBinnacle(DateTime? dateTo, DateTime? dateFrom, string userName)
         {
             var binnacleDAL = new BinnacleDAL();
-            IEnumerable<BinnacleBE> binnaclesBE = binnacleDAL.GetBinnacleWithFilters(dateTo, dateFrom, userName);
-            IEnumerable<BinnacleViewModel> viewModels = Mapper.Map<BinnacleBE, BinnacleViewModel>(binnaclesBE);
+            IList<BinnacleBE> binnaclesBE = binnacleDAL.GetBinnacleWithFilters(dateTo, dateFrom, userName);
+            IList<BinnacleViewModel> viewModels = Mapper.Map<BinnacleBE, BinnacleViewModel>(binnaclesBE);
             return viewModels;
         }
 

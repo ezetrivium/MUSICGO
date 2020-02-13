@@ -24,7 +24,7 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<LanguageBE> Get()
+        public IList<LanguageBE> Get()
         {
             throw new NotImplementedException();
         }
@@ -34,9 +34,9 @@ namespace DAL.Mappers
             var dbContext = new DBContext();
             var dataSet = new DataSet();
             var parameters = new SqlParameter[1];
-            parameters[0] = dbContext.CreateParameters("@UserID", id.ToString());
+            parameters[0] = dbContext.CreateParameters("@languageID", id.ToString());
 
-            dataSet = dbContext.Read("GetLanguageByID", parameters);
+            dataSet = dbContext.Read("GetLanguageById", parameters);
             DataRow dr = dataSet.Tables[0].Rows[0];
 
             LanguageBE language = new LanguageBE()

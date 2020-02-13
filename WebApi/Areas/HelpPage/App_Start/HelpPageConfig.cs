@@ -37,12 +37,12 @@ namespace WebApi.Areas.HelpPage
             //config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
 
             //// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
-            //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 
+            //// Also, the string arrays will be used for IList<string>. The sample objects will be serialized into different media type 
             //// formats by the available formatters.
             //config.SetSampleObjects(new Dictionary<Type, object>
             //{
             //    {typeof(string), "sample string"},
-            //    {typeof(IEnumerable<string>), new string[]{"sample 1", "sample 2"}}
+            //    {typeof(IList<string>), new string[]{"sample 1", "sample 2"}}
             //});
 
             // Extend the following to provide factories for types not handled automatically (those lacking parameterless
@@ -60,8 +60,8 @@ namespace WebApi.Areas.HelpPage
                 new MediaTypeHeaderValue("application/bson"));
 
             //// Uncomment the following to use "[0]=foo&[1]=bar" directly as the sample for all actions that support form URL encoded format
-            //// and have IEnumerable<string> as the body parameter or return type.
-            //config.SetSampleForType("[0]=foo&[1]=bar", new MediaTypeHeaderValue("application/x-www-form-urlencoded"), typeof(IEnumerable<string>));
+            //// and have IList<string> as the body parameter or return type.
+            //config.SetSampleForType("[0]=foo&[1]=bar", new MediaTypeHeaderValue("application/x-www-form-urlencoded"), typeof(IList<string>));
 
             //// Uncomment the following to use "1234" directly as the request sample for media type "text/plain" on the controller named "Values"
             //// and action named "Put".
@@ -100,7 +100,7 @@ namespace WebApi.Areas.HelpPage
                     Type[] parameterTypes = new Type[] { itemsType, typeof(Uri), typeof(long?), };
                     object[] parameters = new object[] { items, null, (long)ObjectGenerator.DefaultCollectionSize, };
 
-                    // Call PageResult(IEnumerable<T> items, Uri nextPageLink, long? count) constructor
+                    // Call PageResult(IList<T> items, Uri nextPageLink, long? count) constructor
                     ConstructorInfo constructor = type.GetConstructor(parameterTypes);
                     return constructor.Invoke(parameters);
                 }

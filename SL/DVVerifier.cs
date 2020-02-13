@@ -45,11 +45,21 @@ namespace SL
                     {
                         Log.Fatal("Se encontro inconsistencia en base de datos en: " + dvvMember);
 
+                        BinnacleSL binnacleSL = new BinnacleSL();
+
+                        binnacleSL.AddBinnacle(new BinnacleBE()
+                        {
+                            Description = "Se encontro inconsistencia en base de datos en: " + dvvMember
+                        });
                         foreach (var obj in dataList)
                         {
                             var hashDVH = DVHCalculate(obj);
                             if (!DVHVerify(obj.GetType().GetProperty("DVH").GetValue(obj).ToString(), hashDVH))
                             {
+                                binnacleSL.AddBinnacle(new BinnacleBE()
+                                {
+                                    Description = "El número de registro modificado es: " + dataList.IndexOf(obj).ToString()
+                                });
                                 Log.Fatal("El número de registro modificado es: " + dataList.IndexOf(obj).ToString());
                                 result = false;
                             }
@@ -65,10 +75,10 @@ namespace SL
         private IList<object> Invoke(string typeName, string methodName)
         {
             var assembly = Assembly.Load("DAL");
-            var type = assembly.GetType("DAL." + typeName);
+            var type = assembly.GetType("DAL.Mappers." + typeName);
             var instance = Activator.CreateInstance(type);
             var method = type.GetMethod(methodName);
-            var result = (IList)method.Invoke(instance, new object[] { null });
+            var result = (IList)method.Invoke(instance, null);
 
             return result.Cast<object>().ToList();
         }
@@ -98,7 +108,7 @@ namespace SL
         {
             var stringBilder = new StringBuilder();
 
-            foreach (var prop in obj.GetType().BaseType.GetProperties())
+            foreach (var prop in obj.GetType().GetProperties())
             {
                 if (!prop.Name.Equals("DVH"))
                     stringBilder.Append(prop.GetValue(obj));

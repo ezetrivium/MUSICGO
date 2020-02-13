@@ -32,7 +32,7 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<DVVBE> Get()
+        public IList<DVVBE> Get()
         {
             var dvvList = new List<DVVBE>();
             var dataSet = new DBContext().Read("GetDVV", null);

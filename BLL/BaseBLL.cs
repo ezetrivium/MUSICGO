@@ -63,11 +63,11 @@ namespace BLL
             
         }
 
-        public virtual IEnumerable<TViewModel> Get()
+        public virtual IList<TViewModel> Get()
         {
             try
             {
-                IEnumerable<TEntity> entities;
+                IList<TEntity> entities;
                 entities = this.Dal.Get();
                 return Mapper.Map<TEntity, TViewModel>(entities);
             }

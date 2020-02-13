@@ -24,16 +24,18 @@ namespace WebApi
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-           
+
             try
             {
                 UserBLL userBLL = new UserBLL();
-                UserViewModel userToFind = new UserViewModel()
+                PermissionsBLL permissionsBLL = new PermissionsBLL();
+                UserBE userToFind = new UserBE()
                 {
                     UserName = context.UserName,
                     Password = context.Password
                 };
-                var user = await Task.Run(() => userBLL.LogIn(userToFind));
+                var user = await Task.Run(() => userBLL.CheckUserName(userToFind));
+                user.Permissions = permissionsBLL.GetUserPermission(user);
                 if (user != null)
                 {
                     var identity = new ClaimsIdentity(context.Options.AuthenticationType);
@@ -56,13 +58,13 @@ namespace WebApi
             }
             catch(Exception ex)
             {
-                throw ex.Message;
+                throw ex;
             }
             
         }
 
 
-        public ClaimsIdentity ListPermissions(IEnumerable<PermissionBE> permissions , ClaimsIdentity identity)
+        public ClaimsIdentity ListPermissions(IList<PermissionBE> permissions , ClaimsIdentity identity)
         {
             foreach (PermissionBE per in permissions)
             {

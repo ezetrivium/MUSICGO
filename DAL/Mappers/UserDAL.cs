@@ -23,7 +23,7 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<UserBE> Get()
+        public IList<UserBE> Get()
         {
             try
             {
@@ -33,21 +33,24 @@ namespace DAL.Mappers
 
                 dataSet = dbContext.Read("GetUsers", null);
 
-
-                foreach (DataRow dr in dataSet.Tables[0].Rows)
+                if (dataSet.Tables[0].Rows.Count > 0)
                 {
-                    Users.Add(new UserBE()
+                    foreach (DataRow dr in dataSet.Tables[0].Rows)
                     {
-                        Id = Guid.Parse(dr["UserID"].ToString()),
-                        Name = dr["Name"].ToString(),
-                        UserName = dr["UserName"].ToString(),
-                        LastName = dr["LastName"].ToString(),
-                        Language = new LanguageBE(),
-                        Playbacks = int.Parse(dr["Playbacks"].ToString()),
-                        Password = dr["Password"].ToString(),
-                        Email = dr["Email"].ToString(),
-                        Blocked = Convert.ToBoolean(dr["Blocked"]),
-                    });
+                        Users.Add(new UserBE()
+                        {
+                            Id = Guid.Parse(dr["UserID"].ToString()),
+                            Name = dr["Name"].ToString(),
+                            UserName = dr["UserName"].ToString(),
+                            LastName = dr["LastName"].ToString(),
+                            Language = new LanguageBE(),
+                            Playbacks = int.Parse(dr["Playbacks"].ToString()),
+                            Password = dr["Password"].ToString(),
+                            Email = dr["Email"].ToString(),
+                            Blocked = Convert.ToBoolean(dr["Blocked"]),
+                        });
+                    }
+
                 }
 
 
@@ -72,38 +75,36 @@ namespace DAL.Mappers
 
         public UserBE GetUserByUserName(UserBE user)
         {
-            try
-            {
+            
                 var dbContext = new DBContext();
                 var dataSet = new DataSet();
                 var parameters = new SqlParameter[1];
                 parameters[0] = dbContext.CreateParameters("@UserName", user.UserName);
 
                 dataSet = dbContext.Read("GetUserByUserName", parameters);
-                DataRow dr = dataSet.Tables[0].Rows[0];
+                
 
-                user.Id = Guid.Parse(dr["UserID"].ToString());
-                user.Name = dr["Name"].ToString();
-                user.UserName = dr["UserName"].ToString();
-                user.LastName = dr["LastName"].ToString();
+                if(dataSet.Tables[0].Rows.Count > 0)
+                {
+                DataRow dr = dataSet.Tables[0].Rows[0];
+                user.Id = Guid.Parse(Helper.GetStringDB(dr["UserID"].ToString())); 
+                user.Name = Helper.GetStringDB(dr["Name"].ToString());
+                user.UserName = Helper.GetStringDB(dr["UserName"].ToString());
+                user.LastName = Helper.GetStringDB(dr["LastName"].ToString());
                 user.Language = new LanguageBE()
                 {
-                    Id = Guid.Parse(dr["LanguageID"].ToString()),
-                    Name = dr["Name"].ToString(),
-                    Code = dr["Code"].ToString(),
+                    Id = Guid.Parse(Helper.GetStringDB(dr["LanguageID"].ToString())),
+                    Name = Helper.GetStringDB(dr["LanguageName"].ToString()),
+                    Code = Helper.GetStringDB(dr["Code"].ToString()),
                 };
-                user.Playbacks = int.Parse(dr["Playbacks"].ToString());
-                user.Password = dr["Password"].ToString();
-                user.Email = dr["Email"].ToString();
-                user.Blocked = Convert.ToBoolean(dr["Blocked"]);
+                user.Playbacks = Helper.GetIntDB(int.Parse(dr["Playbacks"].ToString()));
+                user.Password = Helper.GetStringDB(dr["Password"].ToString());
+                user.Email = Helper.GetStringDB(dr["Email"].ToString());
+                user.Blocked = Helper.ParseBoolDB(Convert.ToBoolean(dr["Blocked"]));
+                }
+                
 
-                return user;
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(Messages.Generic_Error);
-            }
-            
+                return user;           
         }
 
 

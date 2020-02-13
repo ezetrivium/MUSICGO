@@ -13,9 +13,9 @@ namespace Utilities
             return AutoMapper.Mapper.Map<TSource, TDestination>(entity);
         }
 
-        public static IEnumerable<TDestination> Map<TSource, TDestination>(IEnumerable<TSource> entities)
+        public static IList<TDestination> Map<TSource, TDestination>(IList<TSource> entities)
         {
-            return AutoMapper.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(entities);
+            return AutoMapper.Mapper.Map<IList<TSource>, IList<TDestination>>(entities);
         }
     }
 }

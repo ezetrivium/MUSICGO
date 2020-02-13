@@ -12,9 +12,7 @@ namespace ViewModels.ViewModels
         {
             Permissions = new List<PermissionViewModel>();
         }
-        public string DVH { get; set; }
 
-        public Boolean Blocked { get; set; }
 
         public LanguageViewModel Language { get; set; }
 
@@ -32,6 +30,6 @@ namespace ViewModels.ViewModels
 
         public int Playbacks { get; set; }
 
-        public IEnumerable<PermissionViewModel> Permissions { get; set; }
+        public IList<PermissionViewModel> Permissions { get; set; }
     }
 }

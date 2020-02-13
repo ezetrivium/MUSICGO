@@ -19,7 +19,15 @@ namespace DAL.Mappers
             var parameters = Array.Empty<SqlParameter>();
 
             parameters = new SqlParameter[2];
-            parameters[0] = dbContext.CreateParameters("@UserID", entity.User.Id.ToString());
+            if (entity.User == null)
+            {
+                parameters[0] = dbContext.CreateNullParameters("@UserID");
+            }
+            else
+            {
+                parameters[0] = dbContext.CreateParameters("@UserID", entity.User.Id.ToString());
+            }
+            
             parameters[1] = dbContext.CreateParameters("@Description", entity.Description);
 
             if(dbContext.Write("AddBinnacle", parameters) > 0)
@@ -30,7 +38,7 @@ namespace DAL.Mappers
         }
 
 
-        public IEnumerable<BinnacleBE> GetBinnacleWithFilters(DateTime? DateTo, DateTime? DateFrom, string UserName)
+        public IList<BinnacleBE> GetBinnacleWithFilters(DateTime? DateTo, DateTime? DateFrom, string UserName)
         {
             var dbContext = new DBContext();
             var parameters = Array.Empty<SqlParameter>();
@@ -70,7 +78,7 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<BinnacleBE> Get()
+        public IList<BinnacleBE> Get()
         {
             throw new NotImplementedException();
         }

@@ -52,7 +52,9 @@
     <Compile Include="ConfigurationUtils.cs" />
     <Compile Include="ConnectionString.cs" />
     <Compile Include="ConversionUtils.cs" />
+    <Compile Include="Exceptions\BusinessException.cs" />
     <Compile Include="GlobalValues.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MapperConfiguration.cs" />
     <Compile Include="Messages.cs" />

@@ -15,7 +15,7 @@ namespace BE.Entities
         }
         public string DVH { get; set; }
 
-        public Boolean Blocked { get; set; }
+        public bool Blocked { get; set; }
 
         public LanguageBE Language { get; set; }
 
@@ -33,7 +33,7 @@ namespace BE.Entities
 
         public int Playbacks { get; set; }
 
-        public IEnumerable<PermissionBE> Permissions { get; set; }
+        public IList<PermissionBE> Permissions { get; set; }
 
     }
 }

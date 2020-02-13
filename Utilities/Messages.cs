@@ -14,7 +14,7 @@ namespace Utilities
         private const string LOGIN_NOT_OK = "login_not_ok";
         private const string USER_BLOCKED = "user_blocked";
         private const string GENERIC_ERROR = "generic_error";
-
+        private const string INVALID_LOGIN_REQUESTS = "invalid_login_request";
 
 
         public static string UserNotExists => USER_NOT_EXISTS;
@@ -26,5 +26,9 @@ namespace Utilities
         public static string User_Blocked => USER_BLOCKED;
 
         public static string Generic_Error =>GENERIC_ERROR;
+
+        public static string InvalidLoginRequest => INVALID_LOGIN_REQUESTS;
+
+
     }
 }

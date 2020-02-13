@@ -21,7 +21,7 @@ namespace WebApi.App_Start
                 AllowInsecureHttp = true,
 
                 //The Path For generating the Toekn
-                TokenEndpointPath = new PathString("/token"),
+                TokenEndpointPath = new PathString("/api/token"),
 
                 //Setting the Token Expired Time (24 hours)
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
@@ -33,6 +33,8 @@ namespace WebApi.App_Start
             //Token Generations
             app.UseOAuthAuthorizationServer(options);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+
+          
 
             HttpConfiguration config = new HttpConfiguration();
             WebApiConfig.Register(config);

@@ -13,6 +13,6 @@ namespace BE.Entities
             Permissions = new List<PermissionBE>();
         }
 
-        public IEnumerable<PermissionBE> Permissions { get; set; }
+        public IList<PermissionBE> Permissions { get; set; }
     }
 }

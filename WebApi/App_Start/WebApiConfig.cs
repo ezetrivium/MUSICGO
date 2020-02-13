@@ -10,6 +10,8 @@ namespace WebApi
         public static void Register(HttpConfiguration config)
         {
             // Configuración y servicios de API web
+            //var cors = new EnableCorsAttribute("http://institucional.telecom.int,http://institucional.telecom.com.ar,http://localhost:8080", "*", "*");
+            //config.EnableCors(cors);
 
             // Rutas de API web
             config.MapHttpAttributeRoutes();
@@ -19,6 +21,7 @@ namespace WebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
 
             config.Filters.Add(new AuthorizeAttribute());
         }
