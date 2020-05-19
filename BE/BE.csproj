@@ -43,10 +43,12 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Entities\BinnacleBE.cs" />
+    <Compile Include="Entities\ContractBE.cs" />
     <Compile Include="Entities\DVVBE.cs" />
     <Compile Include="Entities\LanguageBE.cs" />
     <Compile Include="Entities\PermissionBE.cs" />
     <Compile Include="Entities\PermissionsGroupBE.cs" />
+    <Compile Include="Entities\ServiceBE.cs" />
     <Compile Include="Entities\UserBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

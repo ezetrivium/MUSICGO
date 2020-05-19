@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from '@/components/Home.vue';
 import Login from '@/components/auth/Login.vue';
 import Register from '@/components/auth/Register.vue';
+import RecoverPassword from '@/components/auth/RecoverPassword.vue';
 
 Vue.use(Router);
 
@@ -29,6 +30,14 @@ export default new Router({
           requiresVisitor: true,
       },
     },
-    
+    {
+      path: '/recoverpassword/:code',
+      name: 'recoverpassword',
+      component: RecoverPassword,
+      props: true,
+      meta: {
+          requiresVisitor: true,
+      },
+    }
   ],
 });

@@ -8,7 +8,59 @@
           </div>
         </b-col>
       </b-row>
-      <b-row>
+      
+
+      <b-row v-show="recoverPasswordShow">
+        <b-col md="6" style="margin:auto;float:none">
+          <div :class="{'loader-background':loading}">
+            <b-card
+              text-variant="white"
+              style="background-color:inherit; min-width:30rem;"
+              class="card-primary"
+              no-body
+            >
+              <b-card-header>
+                <h2>Recover Password</h2>
+              </b-card-header>
+              <b-card-body>
+                <b-container>
+                  <b-row>
+                    <b-form action="#" @submit.prevent="recoverPassword" style="width:100%">
+                      <div>
+                        <b-alert :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+                      </div>                    
+                      <b-form-group
+                        id="usernameRecover"
+                        label="UserName:"
+                        label-for="input-username-recover"
+                        description="Ingrese el nombre de usuario"
+                      >
+                        <b-form-input
+                          id="input-username-recover"
+                          v-model="userLogin.UserName"
+                          type="text"
+                          required
+                          placeholder="Enter username"
+                          class="input-text-primary"
+                        ></b-form-input>
+                      </b-form-group>
+                   
+                      <b-row> 
+                        <b-col md="6" sm="12" style="text-align:center">                       
+                          <b-button class="button-primary" type="submit">Recover Password</b-button>
+                        </b-col>
+                   
+                      </b-row>                     
+                    </b-form>
+                  </b-row>
+                </b-container>
+              </b-card-body>
+            </b-card>
+          </div>
+        </b-col>
+      </b-row>
+
+      <b-row v-show="!recoverPasswordShow">
         <b-col md="6" style="margin:auto;float:none">
           <div :class="{'loader-background':loading}">
             <b-card
@@ -58,8 +110,17 @@
                           class="input-text-primary"
                         ></b-form-input>
                       </b-form-group>
+                      <b-row> 
+                        <b-col md="6" sm="12" style="text-align:center">
+                         
+                          <b-button class="button-primary" type="submit" >Login</b-button>
+                        </b-col>
+                        <b-col md="6" sm="12" style="text-align:center">
+                        
+                            <b-button class="forgot-password" variant="link" v-on:click="changeRecoverPassword">Forgot your password?</b-button>                    
+                        </b-col>
                       
-                      <b-button class="button-primary" type="submit">Login</b-button>
+                      </b-row>                     
                     </b-form>
                   </b-row>
                 </b-container>
@@ -68,6 +129,7 @@
           </div>
         </b-col>
       </b-row>
+      
     </b-container>
   </div>
 </template>
@@ -81,6 +143,7 @@ export default class Login extends Vue {
   private userservice: UserService = userService;
   private userLogin: UserViewModel = new UserViewModel();
   private loading: boolean = false;
+  private recoverPasswordShow = false;
   private message: string = "";
   private variant: string = "";
   private showAlert: boolean = false;
@@ -111,6 +174,37 @@ export default class Login extends Vue {
     this.userLogin.UserName = "";
     this.userLogin.Password = "";
   }
+
+  changeRecoverPassword(){
+    this.recoverPasswordShow = true;
+    this.clearform();
+  }
+
+  recoverPassword(){
+    this.loading = true;
+    this.showAlert = false;
+    this.userservice.recoverPassword(this.userLogin).then(res=>{
+      this.loading = false;
+      if (res.status === 200) {
+        this.message = res.data;
+        this.variant = "success";
+        this.showAlert = true;
+        this.clearform();
+      }
+    })
+    .catch(error => {
+        this.loading = false;
+        if(error.response == null){
+          this.message = error;
+        }
+        else{
+          this.message = error.response.data
+        }
+        this.variant = "danger";
+        this.showAlert = true;
+        this.clearform();
+      });
+  }
 }
 </script>
 
@@ -118,6 +212,8 @@ export default class Login extends Vue {
 h2 {
   color: white;
 }
+
+
 
 .container-login {
   width: 100%;
@@ -142,6 +238,7 @@ h2 {
   opacity: 0.6;
   pointer-events: none;
 }
+
 
 
 </style>

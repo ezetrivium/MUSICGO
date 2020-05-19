@@ -8,12 +8,32 @@ h2 {
 
 .button-primary{
     padding: 0 20px;
-    min-width: 160px;
-    height: 50px;
+    width: 100%;
+    height: 40px;
     font-size: 16px;
     color: #fff;
     background-color: inherit;
 } 
+
+.button-secondary{
+    padding: 0 20px;
+    min-width: 160px;
+    height: 50px;
+    font-size: 16px;
+    color: inherit;
+    background-color: #fff;
+} 
+
+
+.forgot-password{
+
+    font-size: 14px !important;
+    font-family: inherit;
+    background-color: none !important;
+    color: #fff;
+    text-align: center;
+  }
+
 
 .card-primary{
     border-color: rgb(51, 51, 51)
@@ -30,6 +50,7 @@ h2 {
     background-color:RGB(23,21,32);
     color:white;
 }
+
 
 
 .alert{

@@ -68,6 +68,16 @@ namespace Utilities
             return Convert.ToSingle(obj);
         }
 
+        public static double GetDoubleDB(Object obj)
+        {
+            if (obj == Convert.DBNull || obj == null)
+            {
+                return 0;
+            }
+
+            return Convert.ToDouble(obj);
+        }
+
         public static String GetStringDB(Object obj)
         {
             if (obj == Convert.DBNull || obj == null)
@@ -130,6 +140,17 @@ namespace Utilities
 
             return Convert.ToDateTime(obj);
         }
+
+        public static Guid GetGuidDB(Object obj)
+        {
+            if (obj == Convert.DBNull || obj == null)
+            {
+                return Guid.Empty;
+            }
+
+            return Guid.Parse(obj.ToString());
+        }
+
 
 
         public static DateTime? GetDateTimeDBNull(Object obj)

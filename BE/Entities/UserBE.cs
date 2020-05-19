@@ -35,5 +35,9 @@ namespace BE.Entities
 
         public IList<PermissionBE> Permissions { get; set; }
 
+
+        public ContractBE Contract { get; set; }
+
+        public string ImgKey { get; set; }
     }
 }

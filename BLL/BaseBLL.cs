@@ -38,7 +38,7 @@ namespace BLL
                 }
                 else
                 {
-                    throw new Exception("La entidad es inválida");
+                    throw new Exception(Messages.Generic_Error);
                 }
             }
             catch(Exception ex)

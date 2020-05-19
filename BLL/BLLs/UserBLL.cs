@@ -70,6 +70,28 @@ namespace BLL.BLLs
                     }
                     else
                     {
+                        var attempsLogin = "Attemps" + userLogin.Id;
+                        if (CacheManager.GetWithTimeout(attempsLogin) == null) //probar
+                        {
+                            CacheManager.SetWithTimeout(attempsLogin, 0, TimeSpan.FromMinutes(30));
+                        }
+                        if(CacheManager.GetWithTimeout(attempsLogin) != null)
+                        {
+                            CacheManager.Set(attempsLogin, Convert.ToInt32(CacheManager.GetWithTimeout(attempsLogin)) + 1);
+                        }
+                            
+                        if(CacheManager.HasKey(attempsLogin)&& Convert.ToInt32(CacheManager.GetWithTimeout(attempsLogin))>3)
+                        {
+                            this.Block(userLogin);
+                            CacheManager.Remove(attempsLogin);
+                            binnacleSL.AddBinnacle(new BinnacleBE()
+                            {
+                                User = userLogin,
+                                Description = "UserBlocked",
+                            });
+                            throw new BusinessException(Messages.User_Blocked);
+                        }
+
                         throw new BusinessException(Messages.PasswordNotOk);
                     }
                 }
@@ -127,7 +149,115 @@ namespace BLL.BLLs
         }
 
 
+        public void Block(UserBE user)
+        {
+            user.Blocked = true;
+            this.Dal.Update(user);
+        }
 
 
+
+
+        public async Task RecoverPassword(UserViewModel viewModel)
+        {
+            try
+            {
+                UserBE userBE = Mapper.Map<UserViewModel, UserBE>(viewModel);
+                UserBE userToReset = CheckUserName(userBE);
+                BinnacleSL binnacleSL = new BinnacleSL();
+                if (userToReset.Id != Guid.Empty)
+                {
+                    Encryptor encryptor = new Encryptor();
+                    string code = encryptor.Encrypt(userToReset.Id.ToString() + DateTime.Now.ToString());
+                    CacheManager.SetWithTimeout("ResetPassword" + userToReset.Id.ToString() , code, TimeSpan.FromHours(12));
+
+                    string url = GlobalValues.RecoverPasswordURL + code;
+
+                    string body = Email.BodyResetPassword + System.Environment.NewLine + url;
+
+                    await Email.SendAsyncEmail(userToReset.Email, Email.SubjectResetPassword, body);
+
+                    binnacleSL.AddBinnacle(new BinnacleBE()
+                    {
+                        User = userToReset,
+                        Description = "Email to Reset Password",
+                    });
+                }
+                else
+                {
+                    throw new BusinessException(Messages.ResetPasswordNotOk);
+                }
+
+            }
+            catch(BusinessException ex)
+            {
+                throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+
+
+        public void UpdatePassword(RecoverPasswordViewModel viewModel)
+        {
+            try
+            {
+                if(viewModel.Password == viewModel.ConfirmPassword)
+                {
+                    UserDAL userDAL = new UserDAL();
+                    BinnacleSL binnacleSL = new BinnacleSL();
+                    UserBE userBE = new UserBE();
+                    userBE.UserName = viewModel.UserName;
+                    userBE = CheckUserName(userBE);
+
+                    if (CacheManager.GetWithTimeout("ResetPassword" + userBE.Id.ToString()) != null)
+                    {
+
+                        string code = CacheManager.GetWithTimeout("ResetPassword" + userBE.Id.ToString()).ToString();
+
+                        if (code == viewModel.Code)
+                        {
+                            Encryptor encryptor = new Encryptor();
+                            userBE.Password = encryptor.Encrypt(viewModel.Password);
+                            userDAL.Update(userBE);
+                            binnacleSL.AddBinnacle(new BinnacleBE()
+                            {
+                                User = userBE,
+                                Description = "UpdatePassword"
+                            });
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }                  
+                    else
+                    {
+                        throw new Exception();
+                    }
+                
+
+                }
+                else
+                {
+                    throw new BusinessException(Messages.InvalidUpdatePasswordRequest);
+                }
+
+            }
+            catch(BusinessException ex)
+            {
+                throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+            
+            
+
+        }
     }
 }

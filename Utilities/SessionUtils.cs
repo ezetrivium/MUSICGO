@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using System.Web.SessionState;
 
 namespace Utilities
 {
@@ -18,7 +19,7 @@ namespace Utilities
                 }
                 catch
                 {
-                    throw new Exception("Type not valid");
+                    throw new Exception(Messages.Generic_Error);
                 }
             }
 
@@ -49,5 +50,32 @@ namespace Utilities
 
             return false;
         }
+        public static void SetWithTimeout(string name, object value, TimeSpan expireAfter)
+        {
+            HttpContext.Current.Session[name] = value;
+            HttpContext.Current.Session[name + "ExpDate"] = DateTime.Now.Add(expireAfter);
+        }
+
+
+        public static object GetWithTimeout(string name)
+        {
+            object value = HttpContext.Current.Session[name];
+            if (value == null) return null;
+
+            DateTime? expDate = HttpContext.Current.Session[name + "ExpDate"] as DateTime?;
+            if (expDate == null) return null;
+
+            if (expDate < DateTime.Now)
+            {
+                HttpContext.Current.Session.Remove(name); 
+                HttpContext.Current.Session.Remove(name + "ExpDate");
+                return null;
+            }
+
+            return value;
+        }
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 import Axios, { AxiosPromise } from "axios";
 import { IService } from '../interfaces/iservice';
 import { UserViewModel } from '../classes/UserViewModel';
+import { RecoverPasswordViewModel } from '../classes/RecoverPasswordViewModel';
 
 
 
@@ -24,6 +25,14 @@ export class UserService implements IService<UserViewModel> {
     
     login(obj: UserViewModel): AxiosPromise<UserViewModel>{
         return Axios.post(this.url + 'login',obj);
+    }
+
+    recoverPassword(obj: UserViewModel): AxiosPromise<string>{
+        return Axios.post(this.url + 'account/recoverpassword',obj);
+    }
+
+    updatePassword(obj: RecoverPasswordViewModel): AxiosPromise<string>{
+        return Axios.post(this.url + 'account/updatepassword',obj);
     }
 
 

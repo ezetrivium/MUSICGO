@@ -39,15 +39,16 @@ namespace DAL.Mappers
                     {
                         Users.Add(new UserBE()
                         {
-                            Id = Guid.Parse(dr["UserID"].ToString()),
-                            Name = dr["Name"].ToString(),
-                            UserName = dr["UserName"].ToString(),
-                            LastName = dr["LastName"].ToString(),
+                            Id = Helper.GetGuidDB(dr["UserID"]),
+                            Name = Helper.GetStringDB(dr["Name"]),
+                            UserName = Helper.GetStringDB(dr["UserName"]),
+                            LastName = Helper.GetStringDB(dr["LastName"]),
                             Language = new LanguageBE(),
-                            Playbacks = int.Parse(dr["Playbacks"].ToString()),
-                            Password = dr["Password"].ToString(),
-                            Email = dr["Email"].ToString(),
-                            Blocked = Convert.ToBoolean(dr["Blocked"]),
+                            Playbacks = Helper.GetIntDB(dr["Playbacks"]),
+                            Password = Helper.GetStringDB(dr["Password"]),
+                            Email = Helper.GetStringDB(dr["Email"]),
+                            Blocked = Helper.GetBoolDB(dr["Blocked"]),
+                            ImgKey = Helper.GetStringDB(dr["ImgKey"])
                         });
                     }
 
@@ -68,43 +69,98 @@ namespace DAL.Mappers
             throw new NotImplementedException();
         }
 
-        public bool Update(UserBE viewModel)
+        public bool Update(UserBE entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+
+                parameters = new SqlParameter[12];
+
+                parameters[0] = dbContext.CreateParameters("@userID", entity.Id);
+                parameters[1] = dbContext.CreateParameters("@userName", entity.UserName);
+                parameters[2] = dbContext.CreateParameters("@lastName", entity.LastName);
+                parameters[3] = dbContext.CreateParameters("@name", entity.Name);
+                parameters[4] = dbContext.CreateParameters("@languageID", entity.Language.Id);
+                parameters[5] = dbContext.CreateParameters("@email", !string.IsNullOrEmpty(entity.Email) ? entity.Email : null);
+                parameters[6] = dbContext.CreateParameters("@password", entity.Password);
+                parameters[7] = dbContext.CreateParameters("@playbacks", entity.Playbacks);
+                parameters[8] = dbContext.CreateParameters("@blocked", entity.Blocked);
+                parameters[9] = dbContext.CreateParameters("@artistName", !string.IsNullOrEmpty(entity.ArtistName) ? entity.ArtistName : null);
+                parameters[10] = dbContext.CreateParameters("@contractID", entity.Contract == null ? null : entity.Contract.Id.ToString());
+                parameters[11] = dbContext.CreateParameters("@imgKey", !string.IsNullOrEmpty(entity.ImgKey) ? entity.ImgKey : null);
+
+                if (dbContext.Write("UpdateUser", parameters) > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+            
         }
 
         public UserBE GetUserByUserName(UserBE user)
         {
-            
+            try
+            {
                 var dbContext = new DBContext();
                 var dataSet = new DataSet();
                 var parameters = new SqlParameter[1];
                 parameters[0] = dbContext.CreateParameters("@UserName", user.UserName);
 
                 dataSet = dbContext.Read("GetUserByUserName", parameters);
-                
 
-                if(dataSet.Tables[0].Rows.Count > 0)
+
+                if (dataSet.Tables[0].Rows.Count > 0)
                 {
-                DataRow dr = dataSet.Tables[0].Rows[0];
-                user.Id = Guid.Parse(Helper.GetStringDB(dr["UserID"].ToString())); 
-                user.Name = Helper.GetStringDB(dr["Name"].ToString());
-                user.UserName = Helper.GetStringDB(dr["UserName"].ToString());
-                user.LastName = Helper.GetStringDB(dr["LastName"].ToString());
-                user.Language = new LanguageBE()
-                {
-                    Id = Guid.Parse(Helper.GetStringDB(dr["LanguageID"].ToString())),
-                    Name = Helper.GetStringDB(dr["LanguageName"].ToString()),
-                    Code = Helper.GetStringDB(dr["Code"].ToString()),
-                };
-                user.Playbacks = Helper.GetIntDB(int.Parse(dr["Playbacks"].ToString()));
-                user.Password = Helper.GetStringDB(dr["Password"].ToString());
-                user.Email = Helper.GetStringDB(dr["Email"].ToString());
-                user.Blocked = Helper.ParseBoolDB(Convert.ToBoolean(dr["Blocked"]));
+                    DataRow dr = dataSet.Tables[0].Rows[0];
+                    user.Id = Helper.GetGuidDB(dr["UserID"]);
+                    user.Name = Helper.GetStringDB(dr["Name"]);
+                    user.UserName = Helper.GetStringDB(dr["UserName"]);
+                    user.LastName = Helper.GetStringDB(dr["LastName"]);
+                    user.Language = new LanguageBE()
+                    {
+                        Id = Helper.GetGuidDB(dr["LanguageID"]),
+                        Name = Helper.GetStringDB(dr["LanguageName"]),
+                        Code = Helper.GetStringDB(dr["Code"]),
+                    };
+                    user.Playbacks = Helper.GetIntDB(dr["Playbacks"]);
+                    user.Password = Helper.GetStringDB(dr["Password"]);
+                    user.Email = Helper.GetStringDB(dr["Email"]);
+                    user.Blocked = Helper.ParseBoolDB(dr["Blocked"]);
+                    user.ImgKey = Helper.GetStringDB(dr["ImgKey"]);
+                    if(Helper.GetGuidDB(dr["ContractID"]) != Guid.Empty)
+                    {
+                        user.Contract = new ContractBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["ContractID"]),
+                            ExpirationDate = Helper.GetDateTimeDB(dr["ExpirationDate"]),
+                            HireDate = Helper.GetDateTimeDB(dr["HireDate"]),
+                            Service = new ServiceBE()
+                            {
+                                Id = Helper.GetGuidDB(dr["ServiceID"]),
+                                Description = Helper.GetStringDB(dr["Description"]),
+                                Name = Helper.GetStringDB(dr["ServiceName"]),
+                                Price = Helper.GetDoubleDB(dr["Price"])
+                            }
+                        };
+                    }
+                    
                 }
-                
 
-                return user;           
+                return user;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+                    
         }
 
 

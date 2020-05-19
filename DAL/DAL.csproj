@@ -66,6 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\MusicGO.sql" />
+    <Content Include="Scripts\script19-5.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

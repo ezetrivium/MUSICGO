@@ -15,6 +15,11 @@ namespace Utilities
         private const string USER_BLOCKED = "user_blocked";
         private const string GENERIC_ERROR = "generic_error";
         private const string INVALID_LOGIN_REQUESTS = "invalid_login_request";
+        private const string RESET_PASSWORD_NOT_OK = "reset_password_not_ok";
+        private const string INVALID_RESET_PASSWORD_REQUEST = "invalid_reset_password_request";
+        private const string SUCCESSFUL_RESET_PASSWORD_REQUEST = "successful_reset_password_request";
+        private const string SUCCESSFUL_UPDATE_PASSWORD = "successful_update_password";
+        private const string INVALID_UPDATE_PASSWORD_REQUEST = "invalid_update_password_request";
 
 
         public static string UserNotExists => USER_NOT_EXISTS;
@@ -29,6 +34,14 @@ namespace Utilities
 
         public static string InvalidLoginRequest => INVALID_LOGIN_REQUESTS;
 
+        public static string ResetPasswordNotOk => RESET_PASSWORD_NOT_OK;
 
+        public static string InvalidResetPasswordRequest => INVALID_RESET_PASSWORD_REQUEST;
+
+        public static string SuccessfulResetPasswordRequest => SUCCESSFUL_RESET_PASSWORD_REQUEST;
+
+        public static string SuccessfulUpdatePassword => SUCCESSFUL_UPDATE_PASSWORD;
+
+        public static string InvalidUpdatePasswordRequest => INVALID_UPDATE_PASSWORD_REQUEST;
     }
 }

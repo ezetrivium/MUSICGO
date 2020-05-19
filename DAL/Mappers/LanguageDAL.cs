@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace DAL.Mappers
 {
@@ -41,9 +42,9 @@ namespace DAL.Mappers
 
             LanguageBE language = new LanguageBE()
             {
-                Id = Guid.Parse(dr["LanguageID"].ToString()),
-                Code = dr["Code"].ToString(),
-                Name = dr["Name"].ToString(),
+                Id = Helper.GetGuidDB(dr["LanguageID"]),
+                Code = Helper.GetStringDB(dr["Code"]),
+                Name = Helper.GetStringDB(dr["Name"]),
                 Dictionary = new Dictionary<string, string>()
             };
             foreach(DataRow drdic in dataSet.Tables[0].Rows)
