@@ -20,6 +20,7 @@ namespace Utilities
         private const string SUCCESSFUL_RESET_PASSWORD_REQUEST = "successful_reset_password_request";
         private const string SUCCESSFUL_UPDATE_PASSWORD = "successful_update_password";
         private const string INVALID_UPDATE_PASSWORD_REQUEST = "invalid_update_password_request";
+        private const string INVALID_DATA = "invalid_data";
 
 
         public static string UserNotExists => USER_NOT_EXISTS;
@@ -43,5 +44,7 @@ namespace Utilities
         public static string SuccessfulUpdatePassword => SUCCESSFUL_UPDATE_PASSWORD;
 
         public static string InvalidUpdatePasswordRequest => INVALID_UPDATE_PASSWORD_REQUEST;
+
+        public static string InvalidData => INVALID_DATA;
     }
 }

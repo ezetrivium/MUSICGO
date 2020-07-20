@@ -52,16 +52,36 @@ namespace DAL.Mappers
         {
             var dbContext = new DBContext();
             DataSet dataSet;
+            DataSet dataSetUser;
+
+            var permissionsUser = new List<PermissionBE>();
 
             var parameters = new SqlParameter[1];
             parameters[0] = dbContext.CreateParameters("@UserID", user.Id.ToString());
 
+            dataSetUser = dbContext.Read("GetUserPermissions", parameters);
 
-            dataSet = dbContext.Read("GetUserPermissions", parameters);
 
-            var roots = ReturnPermissionsTree(dataSet);
+
+            var roots = this.Get();
+
+            foreach(var root in roots)
+            {
+                if (dataSetUser.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in dataSetUser.Tables[0].Rows)
+                    {
+                        if (root.Id.ToString() == dr[0].ToString())
+                        {
+                            permissionsUser.Add(root);
+                        }
+                    }
+                }
+                
+                
+            }
            
-            return roots;
+            return permissionsUser;
             
         }
 

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BE;
 using BLL.Interfaces;
 using DAL.Interfaces;
+using Utilities.Exceptions;
 
 namespace BLL
 {
@@ -106,13 +107,17 @@ namespace BLL
                 }
                 else
                 {
-                    throw new Exception("La entidad es inválida");
+                    throw new BusinessException(Messages.InvalidData);
                 }
                
             }
-            catch(Exception ex)
+            catch(BusinessException ex)
             {
                 throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
             }       
         }
 

@@ -30,6 +30,8 @@ namespace ViewModels.ViewModels
 
         public int Playbacks { get; set; }
 
+        public bool Blocked { get; set; }
+
         public IList<PermissionViewModel> Permissions { get; set; }
     }
 }

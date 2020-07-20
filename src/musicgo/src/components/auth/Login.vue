@@ -15,7 +15,7 @@
           <div :class="{'loader-background':loading}">
             <b-card
               text-variant="white"
-              style="background-color:inherit; min-width:30rem;"
+              style="background-color:inherit; "
               class="card-primary"
               no-body
             >
@@ -37,7 +37,7 @@
                       >
                         <b-form-input
                           id="input-username-recover"
-                          v-model="userLogin.UserName"
+                          v-model="userNameToRecover.UserName"
                           type="text"
                           required
                           placeholder="Enter username"
@@ -65,7 +65,7 @@
           <div :class="{'loader-background':loading}">
             <b-card
               text-variant="white"
-              style="background-color:inherit; min-width:30rem;"
+              style="background-color:inherit;"
               class="card-primary"
               no-body
             >
@@ -136,13 +136,15 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { UserViewModel } from "../../shared/classes/UserViewModel";
+import { AuthenticationViewModel } from "../../shared/classes/AuthenticationViewModel";
 import userService, { UserService } from "../../shared/services/UserService";
+import { UserViewModel } from '../../shared/classes/UserViewModel';
 @Component({})
 export default class Login extends Vue {
   private userservice: UserService = userService;
   private userLogin: UserViewModel = new UserViewModel();
   private loading: boolean = false;
+  private userNameToRecover : UserViewModel = new UserViewModel();
   private recoverPasswordShow = false;
   private message: string = "";
   private variant: string = "";
@@ -162,7 +164,7 @@ export default class Login extends Vue {
           this.message = error;
         }
         else{
-          this.message = error.response.data
+          this.message = error.response.data.ExceptionMessage;
         }
         this.variant = "danger";
         this.showAlert = true;
@@ -183,7 +185,7 @@ export default class Login extends Vue {
   recoverPassword(){
     this.loading = true;
     this.showAlert = false;
-    this.userservice.recoverPassword(this.userLogin).then(res=>{
+    this.userservice.recoverPassword(this.userNameToRecover).then(res=>{
       this.loading = false;
       if (res.status === 200) {
         this.message = res.data;
@@ -198,7 +200,7 @@ export default class Login extends Vue {
           this.message = error;
         }
         else{
-          this.message = error.response.data
+          this.message = error.response.data;
         }
         this.variant = "danger";
         this.showAlert = true;

@@ -15,12 +15,61 @@ namespace DAL.Mappers
     {
         public bool Add(UserBE entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+
+                parameters = new SqlParameter[11];
+
+                parameters[1] = dbContext.CreateParameters("@userName", entity.UserName);
+                parameters[2] = dbContext.CreateParameters("@lastName", entity.LastName);
+                parameters[3] = dbContext.CreateParameters("@name", entity.Name);
+                parameters[4] = dbContext.CreateParameters("@languageID", entity.Language.Id);
+                parameters[5] = dbContext.CreateParameters("@email", !string.IsNullOrEmpty(entity.Email) ? entity.Email : null);
+                parameters[6] = dbContext.CreateParameters("@password", entity.Password);
+                parameters[7] = dbContext.CreateParameters("@playbacks", entity.Playbacks);
+                parameters[8] = dbContext.CreateParameters("@dvh", entity.DVH);
+                parameters[9] = dbContext.CreateParameters("@artistName", !string.IsNullOrEmpty(entity.ArtistName) ? entity.ArtistName : null);
+                parameters[10] = dbContext.CreateParameters("@contractID", entity.Contract == null ? null : entity.Contract.Id.ToString());
+                parameters[0] = dbContext.CreateParameters("@imgKey", !string.IsNullOrEmpty(entity.ImgKey) ? entity.ImgKey : null);
+
+                if (dbContext.Write("CreateUser", parameters) > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+
         }
 
         public bool Delete(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+
+                parameters = new SqlParameter[1];
+
+                parameters[0] = dbContext.CreateParameters("@userID", id);
+
+                if (dbContext.Write("DeleteUser", parameters) > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
         }
 
         public IList<UserBE> Get()
@@ -48,7 +97,9 @@ namespace DAL.Mappers
                             Password = Helper.GetStringDB(dr["Password"]),
                             Email = Helper.GetStringDB(dr["Email"]),
                             Blocked = Helper.GetBoolDB(dr["Blocked"]),
-                            ImgKey = Helper.GetStringDB(dr["ImgKey"])
+                            ImgKey = Helper.GetStringDB(dr["ImgKey"]),
+                            DVH = Helper.GetStringDB(dr["DVH"])
+
                         });
                     }
 

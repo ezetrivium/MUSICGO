@@ -1,6 +1,6 @@
 import { LanguageViewModel } from './LanguageViewModel';
 import { PermissionViewModel } from './PermissionViewModel';
-
+import { ContractViewModel } from './ContractViewModel';
 export class UserViewModel{
     public Id: number = 0;
     public Language: LanguageViewModel | null = null;
@@ -12,4 +12,6 @@ export class UserViewModel{
     public Password: string = '';
     public ArtistName: string = '';
     public Playbacks: number = 0;
+    public Blocked : boolean = false;
+    public User : UserViewModel | null = null;
 }

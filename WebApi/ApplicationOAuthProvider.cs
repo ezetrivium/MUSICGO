@@ -16,9 +16,11 @@ namespace WebApi
 {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
-        public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        public override  async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            context.Validated();
+           
+           context.Validated();
+
         }
 
 
@@ -46,11 +48,11 @@ namespace WebApi
                     identity.AddClaim(new Claim("LoggedOn", DateTime.Now.ToString()));
                     identity = ListPermissions(user.Permissions, identity);
                     //var additionalData = new AuthenticationProperties(new Dictionary<string, string>{
-                    //    {
+                    //   {
                     //        "role", Newtonsoft.Json.JsonConvert.SerializeObject(identity.userRoles)
                     //    }
                     //});
-                    //var token = new AuthenticationTicket(identity, additionalData);
+                    //var token = new AuthenticationTicket(identity,new AuthenticationProperties() { });
                     context.Validated(identity);
                 }
                 else

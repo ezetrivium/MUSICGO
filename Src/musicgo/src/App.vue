@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar />
-     <router-view ></router-view>
+     <router-view class="margin-page" ></router-view>
   </div>
 </template>
 
@@ -18,6 +18,13 @@ export default class App extends Vue{
 }
 </script>
 
-<style>
-
+<style scoped>
+.margin-page{
+   width: 80% !important;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+   
 </style>

@@ -16,7 +16,7 @@ namespace WebApi.App_Start
             // Enable CORS (cross origin resource sharing) for making request using browser from different domains
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
-            OAuthAuthorizationServerOptions options = new OAuthAuthorizationServerOptions
+            OAuthAuthorizationServerOptions options = new OAuthAuthorizationServerOptions()
             {
                 AllowInsecureHttp = true,
 
@@ -28,16 +28,26 @@ namespace WebApi.App_Start
 
                 //MyAuthorizationServerProvider class will validate the user credentials
                 Provider = new ApplicationOAuthProvider()
+
             };
 
             //Token Generations
+           
             app.UseOAuthAuthorizationServer(options);
-            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
 
-          
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions
+            {
+                AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Active
+            });
+
+        
+
+
 
             HttpConfiguration config = new HttpConfiguration();
             WebApiConfig.Register(config);
+
+
         }
     }
 }

@@ -5,14 +5,16 @@ import userService, {
   UserService
 } from "@/shared/services/UserService.ts";
 import { UserViewModel } from '../classes/UserViewModel';
+import { AuthenticationViewModel } from '../classes/AuthenticationViewModel';
 
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     token: localStorage.getItem('access_token') || null,
-    user: localStorage.getItem('userLog') || null 
+    user: localStorage.getItem('userLog') || null,
+    usersList: [] 
   },
   getters: {
     loggedIn(state) {
@@ -20,6 +22,12 @@ export default new Vuex.Store({
     },
     user(state){
       return JSON.parse(state.user!);
+    },
+    usersList(state){
+      return state.usersList
+    },
+    getToken(state){
+      return state.token
     }
   },
   mutations: {
@@ -34,6 +42,9 @@ export default new Vuex.Store({
        state.token = null,
        state.user=null
      },
+     retrieveUsersList(state, usersList){
+        state.usersList = usersList
+     }
   },
   actions: {
      destroyToken(context) {
@@ -41,6 +52,7 @@ export default new Vuex.Store({
       //  lo de arriba es por si necesito enviar algo al backend cuando se desloguea
        if (context.getters.loggedIn) {
               localStorage.removeItem('access_token')
+              localStorage.removeItem('userLog')
               context.commit('destroyToken')}
      },
      retrieveToken(context, obj:UserViewModel) {
@@ -48,14 +60,41 @@ export default new Vuex.Store({
           userService.login(obj).then(res => {
             console.log(res);
             if (res.status === 200) {
-              const token = res.headers["authorization"]
-              var objtoken = JSON.parse(token);
-              localStorage.setItem('access_token', objtoken.access_token);
-              localStorage.setItem('userLog', JSON.stringify(res.data))
-              context.commit('retrieveToken', token)
+
+              localStorage.setItem('userLog', JSON.stringify(res.data))                   
               context.commit('saveUser', JSON.stringify(res.data))
-              resolve(res);
+
+              
+              let userLogin: AuthenticationViewModel = new AuthenticationViewModel();
+              userLogin.username = obj.UserName;
+              userLogin.password = obj.Password;
+
+                return new Promise((resolveUser,rejectUser)=>{
+                  userService.getAuthToken(userLogin).then(resUser => {
+                    console.log(resUser);
+                    if (resUser.status === 200) {
+                      var token = JSON.parse(JSON.stringify(resUser.data)).access_token;
+                      if(token != null){
+                        localStorage.setItem('access_token', token);
+                        context.commit('retrieveToken', token);
+                        resolve(res);
+                      }
+                                           
+                    }
+                  }).catch(error => {
+                    
+                    localStorage.removeItem('userLog')
+                    localStorage.removeItem('access_token')
+                    context.commit('destroyToken')
+                    console.log(error)         
+                    reject(error);
+                  });
+        
+              })
+              
+
             }
+
           }).catch(error => {
             console.log(error)         
             reject(error);
@@ -63,6 +102,22 @@ export default new Vuex.Store({
 
       })
       
-    }    
+      },
+      retrieveUsersList(context){
+        return new Promise((resolve,reject)=>{
+        userService.get().then(res=> {
+          if(res.status === 200){
+            context.commit('retrieveUsersList',res.data)
+            resolve(res)
+          }
+        })
+        .catch(error =>{
+          console.log(error)
+          reject(error)
+        })})
+      }    
   }
 })
+
+
+export default store;

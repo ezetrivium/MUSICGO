@@ -8,12 +8,19 @@ export class Permissionshelper{
 
     static HasPermission(permission :string) : boolean
     {
-        let user : UserViewModel = store.getters['user'];
         
-        if(user.Permissions!=null && user.Permissions.length>0){
-            this.IteratePermissions(user.Permissions,permission);
+
+        if(store.getters['loggedIn']){
+            let user : UserViewModel = store.getters['user'];
+            
+            if(user.Permissions!=null && user.Permissions.length>0){
+                this.IteratePermissions(user.Permissions,permission);
+            }
+            return this.permissionValidated;
         }
-        return this.permissionValidated;
+        else{
+            return false;
+        }
     }
 
     private static IteratePermissions(permissions : PermissionViewModel[], permissionToValidate : string){

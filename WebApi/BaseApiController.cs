@@ -5,9 +5,11 @@ using System;
 using System.Reflection;
 using System.Security.Claims;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Institucional.WebApi
 {
+
     public abstract class BaseApiController : ApiController
     {
         #region Fields

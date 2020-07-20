@@ -104,7 +104,27 @@ namespace SL
             }
         }
 
-        private string DVHCalculate(object obj)
+        public void DVCalculate(string dvvMember)
+        {
+           
+            var dataList = Invoke(dvvMember, "Get");
+
+            if (dataList.Any())
+            {
+                var hash = DVVCalculate(dataList);
+                var dvv = new DVVBE
+                {
+                    TableName = dvvMember,
+                    DVVHash = hash
+                };
+
+                if (!(new DVDAL().Update(dvv)))
+                    Log.Error("El digito vertical no se guardó correctamente");
+            }
+            
+        }
+
+        public string DVHCalculate(object obj)
         {
             var stringBilder = new StringBuilder();
 

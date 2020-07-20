@@ -20,6 +20,38 @@ namespace BLL.BLLs
             this.Dal = new UserDAL();
         }
 
+
+        public override bool Add(UserViewModel viewModel)
+        {
+            try
+            {
+                if (this.IsValid(viewModel))
+                {
+                    UserBE entity;
+                    entity = Mapper.Map<UserViewModel, UserBE>(viewModel);
+
+                    DVVerifier dvvv = new DVVerifier();
+
+                    entity.DVH = dvvv.DVHCalculate(entity);
+                    bool result = this.Dal.Add(entity);
+                    return result;
+                }
+                else
+                {
+                    throw new BusinessException(Messages.InvalidData);
+                }
+
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
         public UserViewModel LogIn(UserViewModel viewModel)
         {
             try
@@ -71,14 +103,13 @@ namespace BLL.BLLs
                     else
                     {
                         var attempsLogin = "Attemps" + userLogin.Id;
-                        if (CacheManager.GetWithTimeout(attempsLogin) == null) //probar
+                        if (!CacheManager.HasKey(attempsLogin))
                         {
                             CacheManager.SetWithTimeout(attempsLogin, 0, TimeSpan.FromMinutes(30));
                         }
-                        if(CacheManager.GetWithTimeout(attempsLogin) != null)
-                        {
-                            CacheManager.Set(attempsLogin, Convert.ToInt32(CacheManager.GetWithTimeout(attempsLogin)) + 1);
-                        }
+                        
+                        CacheManager.Set(attempsLogin, Convert.ToInt32(CacheManager.GetWithTimeout(attempsLogin)) + 1);
+                        
                             
                         if(CacheManager.HasKey(attempsLogin)&& Convert.ToInt32(CacheManager.GetWithTimeout(attempsLogin))>3)
                         {
@@ -114,10 +145,13 @@ namespace BLL.BLLs
 
         public UserBE CheckUserName(UserBE user)
         {
+            
             UserDAL userDAL = new UserDAL();
-            
-            return userDAL.GetUserByUserName(user);
-            
+
+            UserBE userbe = userDAL.GetUserByUserName(user);
+
+            return userbe;
+  
         }
 
         private bool VerifyLoginPermission(IList<PermissionBE> permissions)
@@ -258,6 +292,21 @@ namespace BLL.BLLs
             
             
 
+        }
+
+
+
+        protected override bool IsValid(UserViewModel viewModel)
+        {
+
+            if(viewModel.UserName != "" && viewModel.Email !="" && viewModel.LastName != "" && viewModel.Password != "" && viewModel.Language.Id != Guid.Empty && viewModel.Name != "")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
