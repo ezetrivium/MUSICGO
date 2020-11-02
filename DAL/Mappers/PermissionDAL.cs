@@ -7,13 +7,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace DAL.Mappers
 {
     public class PermissionDAL : IDAL<PermissionBE>
     {
         #region interface methods
-        public bool Add(PermissionBE entity)
+        public Guid Add(PermissionBE entity)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +47,140 @@ namespace DAL.Mappers
         }
 
         #endregion
+
+        public bool DeleteUserPermission(UserBE entity, DBContext dbCon)
+        {
+            try
+            {
+
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+                bool result = false;
+                UserDAL userDAL = new UserDAL();
+
+                
+                try
+                {
+
+                    var permissions = this.GetUserPermissions(entity);
+                    PermissionDAL per = new PermissionDAL();
+
+                    foreach (var perold in permissions)
+                    {
+                        var pernew = entity.Permissions.Where(p => p.Name == perold.Name).FirstOrDefault();
+                        if (pernew == null && perold.Name != "Login")
+                        {
+                            parameters = new SqlParameter[2];
+
+                            parameters[1] = dbCon.CreateParameters("@userID", entity.Id);
+                            parameters[0] = dbCon.CreateParameters("@permissionID", perold.Id);
+ 
+
+                            return (dbCon.Write("DeleteUserPermission", parameters) > 0) ? true : false;
+                            
+                        }
+
+                    }
+
+                    return result;
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+
+        }
+
+        public bool SetUserPermission(UserBE entity, DBContext dbCon)
+        {
+            try
+            {
+                
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+                bool result = false;
+                
+
+                //probar bien esto
+                try
+                {
+                    
+                    foreach (var userper in entity.Permissions)
+                    {
+                        parameters = new SqlParameter[3];
+
+                        parameters[1] = dbCon.CreateParameters("@userID", entity.Id);
+                        parameters[0] = dbCon.CreateParameters("@permissionID", userper.Id);
+                        parameters[2] = dbCon.CreateParameters("@userpermissionID", Guid.NewGuid());
+
+                        result =  (dbCon.Write("SetUserPermission", parameters) > 0) ? true : false;
+                      
+                    }
+                    return result;
+                   
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+                
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+
+        }
+
+
+        public bool SetUserPermission(UserBE entity)
+        {
+            var dbContext = new DBContext();
+           
+            bool result = false;
+           
+            try
+            {
+                dbContext.BeginTran();
+                
+                PermissionDAL per = new PermissionDAL();
+
+                if (per.DeleteUserPermission(entity, dbContext))
+                {
+                    result = per.SetUserPermission(entity, dbContext);
+                }
+                
+
+                if (result)
+                {
+                    dbContext.CommitTran();
+                    return result;
+                }
+                
+                dbContext.RollBackTran();
+                return result;
+
+            }
+            catch (Exception)
+            {
+                return result;
+            }
+
+        }
+
 
 
         public IList<PermissionBE> GetUserPermissions(UserBE user)
@@ -84,6 +219,109 @@ namespace DAL.Mappers
             return permissionsUser;
             
         }
+
+
+        public IList<PermissionBE> GetRootPermissions()
+        {
+            var dbContext = new DBContext();
+            DataSet dataSet;
+   
+
+            var permissions = new List<PermissionBE>();
+
+      
+
+            dataSet = dbContext.Read("GetRootPermissions", null);
+
+            if (dataSet.Tables.Count > 0)
+            {
+                foreach (DataRow dr in dataSet.Tables[0].Rows)
+                {
+                    if (Helper.GetBoolDB(dr["IsGroup"]))
+                    {
+                        permissions.Add(new PermissionsGroupBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["PermissionID"]),
+                            Name = Helper.GetStringDB(dr["Name"])
+                        });
+                    }
+                    else
+                    {
+                        permissions.Add(new PermissionBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["PermissionID"]),
+                            Name = Helper.GetStringDB(dr["Name"])
+                        });
+                    }
+                    
+                }
+            }
+
+            return permissions;
+
+        }
+
+
+        public PermissionBE GetLoginPermission()
+        {
+            var dbContext = new DBContext();
+            DataSet dataSet;
+            var permission = new PermissionBE();
+
+            dataSet = dbContext.Read("GetLoginPermission", null);
+
+            if (dataSet.Tables[0].Rows.Count > 0)
+            {
+                permission.Id = Helper.GetGuidDB(dataSet.Tables[0].Rows[0]["PermissionID"]);
+                permission.Name = Helper.GetStringDB(dataSet.Tables[0].Rows[0]["Name"]);
+            }
+
+            return permission;
+        }
+        public IList<PermissionBE> GetServicePermissions(ServiceBE service)
+        {
+            var dbContext = new DBContext();
+            DataSet dataSet;
+            
+
+            var permissions = new List<PermissionBE>();
+
+            var parameters = new SqlParameter[1];
+            parameters[0] = dbContext.CreateParameters("@serviceCode", service.Code);
+
+            dataSet= dbContext.Read("GetServicePermissions", parameters);
+
+
+
+            if (dataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in dataSet.Tables[0].Rows)
+                {
+                    if (Helper.GetBoolDB(dr["IsGroup"]))
+                    {
+                        permissions.Add(new PermissionsGroupBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["PermissionID"]),
+                            Name = Helper.GetStringDB(dr["Name"])
+                        });
+                    }
+                    else
+                    {
+                        permissions.Add(new PermissionBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["PermissionID"]),
+                            Name = Helper.GetStringDB(dr["Name"])
+                        });
+                    }
+                }
+
+            }
+
+
+            return permissions;
+
+        }
+
 
 
         private IList<PermissionBE> ReturnPermissionsTree(DataSet dataSet)

@@ -15,7 +15,7 @@ namespace DAL.Mappers
     {
 
 
-        public bool Add(LanguageBE entity)
+        public Guid Add(LanguageBE entity)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +27,37 @@ namespace DAL.Mappers
 
         public IList<LanguageBE> Get()
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                var dbContext = new DBContext();
+
+                DataSet dataSet;
+                List<LanguageBE> languages = new List<LanguageBE>();
+
+                dataSet = dbContext.Read("GetLanguages", null);
+
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dataSet.Tables[0].Rows)
+                    {
+                        languages.Add(new LanguageBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["LanguageID"]),
+                            Name = Helper.GetStringDB(dr["Name"]),
+                            Code = Helper.GetStringDB(dr["Code"])
+                        });
+                    }
+
+                }
+
+                return languages;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
         }
 
         public LanguageBE GetById(Guid id)

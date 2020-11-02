@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ViewModels.ViewModels
 {
@@ -33,5 +34,13 @@ namespace ViewModels.ViewModels
         public bool Blocked { get; set; }
 
         public IList<PermissionViewModel> Permissions { get; set; }
+
+        public ContractViewModel Contract { get; set; }
+
+        public string ImgKey { get; set; }
+
+        public HttpPostedFileBase File { get; set; }
+
+        public string ImageBase64 { get; set; }
     }
 }

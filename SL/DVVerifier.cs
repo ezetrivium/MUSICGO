@@ -36,7 +36,7 @@ namespace SL
 
             foreach (var dvvMember in _dvvMembers)
             {
-                var dataList = Invoke(dvvMember, "Get");
+                var dataList = Invoke(dvvMember, "GetDVHEntities");
                 if (dataList.Any())
                 {
                     var hashDVV = DVVCalculate(dataList);
@@ -72,6 +72,15 @@ namespace SL
             return result;
         }
 
+
+
+
+
+
+
+
+
+
         private IList<object> Invoke(string typeName, string methodName)
         {
             var assembly = Assembly.Load("DAL");
@@ -87,7 +96,7 @@ namespace SL
         {
             foreach (var dvvMember in _dvvMembers)
             {
-                var dataList = Invoke(dvvMember, "Get");
+                var dataList = Invoke(dvvMember, "GetDVHEntities");
 
                 if (dataList.Any())
                 {
@@ -107,7 +116,7 @@ namespace SL
         public void DVCalculate(string dvvMember)
         {
            
-            var dataList = Invoke(dvvMember, "Get");
+            var dataList =Invoke(dvvMember, "GetDVHEntities");
 
             if (dataList.Any())
             {
@@ -123,6 +132,28 @@ namespace SL
             }
             
         }
+
+
+        //public  DVCalculateAndSave(string dvvMember)
+        //{
+
+           
+
+            
+        //        var hash = DVVCalculate(dataList);
+        //        var dvv = new DVVBE
+        //        {
+        //            TableName = dvvMember,
+        //            DVVHash = hash
+        //        };
+
+        //        if (!(new DVDAL().Update(dvv)))
+        //            Log.Error("El digito vertical no se guardó correctamente");
+        //    }
+        //}
+
+
+        
 
         public string DVHCalculate(object obj)
         {

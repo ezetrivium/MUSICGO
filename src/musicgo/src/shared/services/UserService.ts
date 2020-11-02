@@ -8,21 +8,61 @@ import store  from '../store/store';
 
 export class UserService implements IService<UserViewModel> {
     private url: string = process.env.VUE_APP_API;
-    add(obj: UserViewModel): AxiosPromise<UserViewModel> {
-        throw new Error("Method not implemented.");
+    add(obj: any): AxiosPromise<any> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.post(this.url + 'users/add', obj);
     }
-    delete(obj: UserViewModel): AxiosPromise<UserViewModel> {
-        throw new Error("Method not implemented.");
+
+    subscribe(obj: any): AxiosPromise<any> {
+        
+        return Axios.post(this.url + 'users/subscribe', obj);
     }
+
+    delete(obj: UserViewModel): AxiosPromise<any> {
+        
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.delete(this.url + 'users/delete/' + obj.Id);
+    }
+
+    deleteMyProfile(obj: UserViewModel): AxiosPromise<any> {
+        
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.delete(this.url + 'users/deletemyprofile/' + obj.Id);
+    }
+
     get(): AxiosPromise<UserViewModel[]> {
         Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
         return Axios.get(this.url + 'users/get');
     }
     getById(obj: UserViewModel): AxiosPromise<UserViewModel> {
-        throw new Error("Method not implemented.");
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.get(this.url + 'users/getbyid', {
+            params: {
+                id : obj.Id
+            }
+        });
     }
-    update(obj: UserViewModel): AxiosPromise<UserViewModel> {
-        throw new Error("Method not implemented.");
+    getProfile(obj: UserViewModel): AxiosPromise<UserViewModel> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.get(this.url + 'users/getprofile', {
+            params: {
+                id : obj.Id
+            }
+        });
+    }
+    update(obj: any): AxiosPromise<any> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.post(this.url + 'users/update', obj);
+    }
+
+    myProfile(obj: any): AxiosPromise<any> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.post(this.url + 'users/myprofile', obj);
+    }
+
+    setUserPermissions(obj: UserViewModel): AxiosPromise<any> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.post(this.url + 'users/setuserpermissions', obj);
     }
     
     login(obj: UserViewModel): AxiosPromise<UserViewModel>{

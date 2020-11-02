@@ -1,11 +1,12 @@
 ﻿
 using log4net;
 using log4net.Config;
+using MercadoPago;
 using System;
 using System.Reflection;
 using System.Security.Claims;
 using System.Web.Http;
-
+using Utilities;
 
 namespace Institucional.WEBAPIClient
 {
@@ -16,6 +17,7 @@ namespace Institucional.WEBAPIClient
 
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        
         #endregion Fields
 
         #region Properties
@@ -31,6 +33,7 @@ namespace Institucional.WEBAPIClient
         protected BaseApiController()
         {
             XmlConfigurator.Configure();
+            
             //Log = LogManager.GetLogger(GlobalValues.WebCheckIn2LoggerName);
         }
 

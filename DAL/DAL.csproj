@@ -43,10 +43,13 @@
   <ItemGroup>
     <Compile Include="DBContext.cs" />
     <Compile Include="Interfaces\IDAL.cs" />
+    <Compile Include="Interfaces\IDV.cs" />
     <Compile Include="Mappers\BinnacleDAL.cs" />
+    <Compile Include="Mappers\ContractDAL.cs" />
     <Compile Include="Mappers\DVDAL.cs" />
     <Compile Include="Mappers\LanguageDAL.cs" />
     <Compile Include="Mappers\PermissionDAL.cs" />
+    <Compile Include="Mappers\ServiceDAL.cs" />
     <Compile Include="Mappers\UserDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

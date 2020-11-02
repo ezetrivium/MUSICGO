@@ -12,19 +12,21 @@ namespace DAL.Mappers
 {
     public class DVDAL : IDAL<DVVBE>
     {
-        public bool Add(DVVBE entity)
+        public Guid Add(DVVBE entity)
         {
-            var dbContext = new DBContext();
-            var parameters = new SqlParameter[2];
-            parameters[0] = dbContext.CreateParameters("@DVVID", entity.Id.ToString());
-            parameters[1] = dbContext.CreateParameters("@TableName", entity.TableName);
-            parameters[2] = dbContext.CreateParameters("@DVVHash", entity.DVVHash);
+            //var dbContext = new DBContext();
+            //var parameters = new SqlParameter[3];
+            //parameters[0] = dbContext.CreateParameters("@DVVID", entity.Id.ToString());
+            //parameters[1] = dbContext.CreateParameters("@TableName", entity.TableName);
+            //parameters[2] = dbContext.CreateParameters("@DVVHash", entity.DVVHash);
 
-            if(dbContext.Write("SetDVV", parameters) != -1)
-            {
-                return true;
-            }
-            return false;
+            //if(dbContext.Write("SetDVV", parameters) != -1)
+            //{
+            //    return true;
+            //}
+            //return false;
+
+            throw new NotImplementedException();
         }
 
         public bool Delete(Guid id)
@@ -59,9 +61,10 @@ namespace DAL.Mappers
         public bool Update(DVVBE entity)
         {
             var dbContext = new DBContext();
-            var parameters = new SqlParameter[2];
+            var parameters = new SqlParameter[3];
             parameters[0] = dbContext.CreateParameters("@TableName", entity.TableName);
             parameters[1] = dbContext.CreateParameters("@DVVHash", entity.DVVHash);
+            parameters[2] = dbContext.CreateParameters("@DVVID", Guid.NewGuid());
 
             if (dbContext.Write("SetDVV", parameters) > 0)
             {

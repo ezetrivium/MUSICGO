@@ -4,7 +4,10 @@
 
 <script>
 export default {
-  created() {
+  mounted() {
+
+    this.$store.dispatch('destroyUsersList');
+
     this.$store.dispatch('destroyToken')
       .then(response => {
         this.$router.push({ name: 'home' })

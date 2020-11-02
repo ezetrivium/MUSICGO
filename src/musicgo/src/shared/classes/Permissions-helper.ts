@@ -8,7 +8,7 @@ export class Permissionshelper{
 
     static HasPermission(permission :string) : boolean
     {
-        
+        this.permissionValidated = false;
 
         if(store.getters['loggedIn']){
             let user : UserViewModel = store.getters['user'];

@@ -1,0 +1,114 @@
+
+Date - TransactionID - User - Thread - Class - Method - Message
+ 2020-11-01 18:05:11,862 - (null) - 46 - 90 - SL.DVVerifier - DVVerify - Se encontro inconsistencia en base de datos en: UserDAL
+ 2020-11-01 18:05:12,581 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 0
+ 2020-11-01 18:05:12,585 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 1
+ 2020-11-01 18:05:12,590 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 2
+ 2020-11-01 18:05:12,596 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 3
+ 2020-11-01 18:05:12,600 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 4
+ 2020-11-01 18:05:12,609 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 5
+ 2020-11-01 18:05:12,612 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 6
+ 2020-11-01 18:05:12,615 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 7
+ 2020-11-01 18:05:12,618 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 8
+ 2020-11-01 18:05:12,625 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 9
+ 2020-11-01 18:05:12,628 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 10
+ 2020-11-01 18:05:12,630 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 11
+ 2020-11-01 18:05:12,634 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 12
+ 2020-11-01 18:05:12,641 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 13
+ 2020-11-01 18:05:12,644 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 14
+ 2020-11-01 18:05:12,647 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 15
+ 2020-11-01 18:05:12,649 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 16
+ 2020-11-01 18:05:12,657 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 17
+ 2020-11-01 18:05:12,660 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 18
+ 2020-11-01 18:05:12,662 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 19
+ 2020-11-01 18:05:12,665 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 20
+ 2020-11-01 18:05:12,672 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 21
+ 2020-11-01 18:05:12,674 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 22
+ 2020-11-01 18:05:12,677 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 23
+ 2020-11-01 18:05:12,679 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 24
+ 2020-11-01 18:05:12,682 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 25
+ 2020-11-01 18:05:12,691 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 26
+ 2020-11-01 18:05:12,694 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 27
+ 2020-11-01 18:05:12,697 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 28
+ 2020-11-01 18:05:12,703 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 29
+ 2020-11-01 18:05:12,706 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 30
+ 2020-11-01 18:05:12,708 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 31
+ 2020-11-01 18:05:12,710 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 32
+ 2020-11-01 18:05:12,713 - (null) - 63 - 90 - SL.DVVerifier - DVVerify - El número de registro modificado es: 33
+Date - TransactionID - User - Thread - Class - Method - Message
+ 2020-11-01 19:46:08,638 - (null) - 46 - 46 - SL.DVVerifier - DVVerify - Se encontro inconsistencia en base de datos en: UserDAL
+ 2020-11-01 19:46:08,647 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 0
+ 2020-11-01 19:46:08,652 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 1
+ 2020-11-01 19:46:08,656 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 2
+ 2020-11-01 19:46:08,662 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 3
+ 2020-11-01 19:46:08,666 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 4
+ 2020-11-01 19:46:08,670 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 5
+ 2020-11-01 19:46:08,673 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 6
+ 2020-11-01 19:46:08,677 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 7
+ 2020-11-01 19:46:08,679 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 8
+ 2020-11-01 19:46:08,683 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 9
+ 2020-11-01 19:46:08,687 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 10
+ 2020-11-01 19:46:08,689 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 11
+ 2020-11-01 19:46:08,698 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 12
+ 2020-11-01 19:46:08,702 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 13
+ 2020-11-01 19:46:08,704 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 14
+ 2020-11-01 19:46:08,707 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 15
+ 2020-11-01 19:46:08,710 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 16
+ 2020-11-01 19:46:08,714 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 17
+ 2020-11-01 19:46:08,717 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 18
+ 2020-11-01 19:46:08,720 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 19
+ 2020-11-01 19:46:08,723 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 20
+ 2020-11-01 19:46:08,732 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 21
+ 2020-11-01 19:46:08,736 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 22
+ 2020-11-01 19:46:08,743 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 23
+ 2020-11-01 19:46:08,746 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 24
+ 2020-11-01 19:46:08,748 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 25
+ 2020-11-01 19:46:08,750 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 26
+ 2020-11-01 19:46:08,755 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 27
+ 2020-11-01 19:46:08,763 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 28
+ 2020-11-01 19:46:08,767 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 29
+ 2020-11-01 19:46:08,774 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 30
+ 2020-11-01 19:46:08,780 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 31
+ 2020-11-01 19:46:08,783 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 32
+ 2020-11-01 19:46:08,785 - (null) - 63 - 46 - SL.DVVerifier - DVVerify - El número de registro modificado es: 33
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+ 2020-11-01 22:24:11,939 - (null) - 46 - 15 - SL.DVVerifier - DVVerify - Se encontro inconsistencia en base de datos en: UserDAL
+ 2020-11-01 22:24:12,384 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 0
+ 2020-11-01 22:24:12,385 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 1
+ 2020-11-01 22:24:12,387 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 2
+ 2020-11-01 22:24:12,394 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 3
+ 2020-11-01 22:24:12,398 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 4
+ 2020-11-01 22:24:12,401 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 5
+ 2020-11-01 22:24:12,403 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 6
+ 2020-11-01 22:24:12,404 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 7
+ 2020-11-01 22:24:12,406 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 8
+ 2020-11-01 22:24:12,412 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 9
+ 2020-11-01 22:24:12,413 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 10
+ 2020-11-01 22:24:12,415 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 11
+ 2020-11-01 22:24:12,417 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 12
+ 2020-11-01 22:24:12,421 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 13
+ 2020-11-01 22:24:12,427 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 14
+ 2020-11-01 22:24:12,430 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 15
+ 2020-11-01 22:24:12,432 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 16
+ 2020-11-01 22:24:12,434 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 17
+ 2020-11-01 22:24:12,435 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 18
+ 2020-11-01 22:24:12,437 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 19
+ 2020-11-01 22:24:12,443 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 20
+ 2020-11-01 22:24:12,449 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 21
+ 2020-11-01 22:24:12,451 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 22
+ 2020-11-01 22:24:12,456 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 23
+ 2020-11-01 22:24:12,459 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 24
+ 2020-11-01 22:24:12,461 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 25
+ 2020-11-01 22:24:12,463 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 26
+ 2020-11-01 22:24:12,466 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 27
+ 2020-11-01 22:24:12,468 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 28
+ 2020-11-01 22:24:12,472 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 29
+ 2020-11-01 22:24:12,474 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 30
+ 2020-11-01 22:24:12,476 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 31
+ 2020-11-01 22:24:12,478 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 32
+ 2020-11-01 22:24:12,479 - (null) - 63 - 15 - SL.DVVerifier - DVVerify - El número de registro modificado es: 33
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message

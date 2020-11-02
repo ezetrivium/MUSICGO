@@ -1,0 +1,8 @@
+
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+Date - TransactionID - User - Thread - Class - Method - Message
+ 2020-09-18 20:52:11,397 - (null) - 46 - 8 - SL.DVVerifier - DVVerify - Se encontro inconsistencia en base de datos en: UserDAL
+ 2020-09-18 20:52:21,298 - (null) - 63 - 8 - SL.DVVerifier - DVVerify - El número de registro modificado es: 0
+ 2020-09-18 20:52:21,303 - (null) - 63 - 8 - SL.DVVerifier - DVVerify - El número de registro modificado es: 1

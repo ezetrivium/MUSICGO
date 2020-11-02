@@ -15,6 +15,7 @@ namespace WEBAPIClient
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
             MapperConfiguration.Initialize();
+            MercadoPago.SDK.AccessToken = GlobalValues.AccessToken;
         }
     }
 }

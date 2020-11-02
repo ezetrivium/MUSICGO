@@ -120,7 +120,12 @@
                             <b-button class="forgot-password" variant="link" v-on:click="changeRecoverPassword">Forgot your password?</b-button>                    
                         </b-col>
                       
-                      </b-row>                     
+                      </b-row>  
+                      <b-row>
+                        <b-col style="text-align:center; padding-top:20px">
+                            <small>¿No tienes una cuenta?  <router-link :to="{ name: 'Subscribe' }">Regístrate</router-link></small>
+                        </b-col>
+                      </b-row>                    
                     </b-form>
                   </b-row>
                 </b-container>
@@ -164,7 +169,10 @@ export default class Login extends Vue {
           this.message = error;
         }
         else{
-          this.message = error.response.data.ExceptionMessage;
+          
+            this.message = error.response.data.ExceptionMessage;
+           
+          
         }
         this.variant = "danger";
         this.showAlert = true;
@@ -200,7 +208,12 @@ export default class Login extends Vue {
           this.message = error;
         }
         else{
-          this.message = error.response.data;
+          if(error.response.data.Message != null){
+                 this.message = error.response.data.Message;
+            }
+            else{
+                this.message = error.response.data
+            }
         }
         this.variant = "danger";
         this.showAlert = true;

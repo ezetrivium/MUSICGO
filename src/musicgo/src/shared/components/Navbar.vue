@@ -8,7 +8,7 @@
 
     
       <!-- <b-nav-item-dropdown :text="$t('user')" right>              -->
-      <b-nav-item-dropdown id="gestion" class="link" style="padding-top:15px" text="Gestion" > 
+      <b-nav-item-dropdown id="gestion" class="link" style="padding-top:15px" text="Gestion" v-show="hasPermission('SuperAdmin') ||hasPermission('Admin')" > 
         <b-dropdown-item v-show="hasPermission('GetUsers')" >
           <router-link class="link-dropdown"  :to="{ name: 'usersList' }">Users</router-link>
         </b-dropdown-item>
@@ -20,6 +20,16 @@
         <template slot="button-content">
             <b-icon font-scale="2" icon="person"></b-icon>
         </template>
+          <b-dropdown-item v-show="loggedIn()">
+            <router-link class="link-dropdown"  :to="{ name: 'MyProfile' }">Mi Perfil</router-link>
+          </b-dropdown-item>
+          <b-dropdown-item v-show="loggedIn()">
+            <router-link class="link-dropdown"  :to="{ path: `/contractservice/${this.userLogged().Id}` }">Contratar</router-link>
+          </b-dropdown-item>
+          <b-dropdown-item v-show="!loggedIn()">
+            <router-link class="link-dropdown"  :to="{ name: 'Subscribe' }">Suscribirse</router-link>
+          </b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item v-show="!loggedIn()">
             <router-link class="link-dropdown"  :to="{ name: 'login' }">Login</router-link>
           </b-dropdown-item>
@@ -39,12 +49,12 @@
         </b-nav-item>
 
       <!-- <b-nav-item-dropdown :text="$t('user')" right>              -->
-        <b-nav-item-dropdown id="gestion" class="link" style="padding-top:10px" >
+        <b-nav-item-dropdown id="gestion" class="link" style="padding-top:10px" v-show="hasPermission('SuperAdmin') ||hasPermission('Admin')" >
           
           <template slot="button-content">
             <b-icon font-scale="1.5" icon="table"></b-icon>
           </template>
-        <b-dropdown-item  >
+        <b-dropdown-item v-show="hasPermission('GetUsers')" >
           <router-link class="link-dropdown"  :to="{ name: 'usersList' }">Users</router-link>
         </b-dropdown-item>
       </b-nav-item-dropdown>
@@ -56,6 +66,16 @@
         <template slot="button-content">
             <b-icon font-scale="2" icon="person"></b-icon>
         </template>
+          <b-dropdown-item v-show="loggedIn()">
+            <router-link class="link-dropdown"  :to="{ name: 'MyProfile' }">Mi Perfil</router-link>
+          </b-dropdown-item>
+          <b-dropdown-item v-show="loggedIn()">
+            <router-link class="link-dropdown"  :to="{ path: `/contractservice/${this.userLogged().Id}` }">Contratar</router-link>
+          </b-dropdown-item>
+          <b-dropdown-item v-show="!loggedIn()">
+            <router-link class="link-dropdown"  :to="{ name: 'Subscribe' }">Suscribirse</router-link>
+          </b-dropdown-item>
+          <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item v-show="!loggedIn()">
             <router-link class="link-dropdown"  :to="{ name: 'login' }">Login</router-link>
           </b-dropdown-item>
@@ -74,16 +94,31 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Permissionshelper } from '../classes/Permissions-helper';
+import { UserViewModel } from '../classes/UserViewModel';
 
 @Component({})
 export default class Navbar extends Vue{
   private mobileView : boolean = false;
+  private user : UserViewModel = new UserViewModel();
   created(){
     this.handleView();
+     
+  }
+
+  mounted(){
+    this.userLogged();
   }
 
   computed() {
-    this.loggedIn();
+    
+   
+  }
+
+  userLogged(){
+    if(this.loggedIn()){
+      this.user = this.$store.getters.user as UserViewModel
+    } 
+    return this.user;
   }
 
   loggedIn(){
@@ -91,7 +126,8 @@ export default class Navbar extends Vue{
   }
 
   hasPermission(permission : string){
-      return Permissionshelper.HasPermission(permission);      
+      var result = Permissionshelper.HasPermission(permission);
+      return result;      
   }
 
   handleView(){
@@ -126,7 +162,7 @@ export default class Navbar extends Vue{
 .link-dropdown{
   color: white;
   text-decoration: none;
-  font-size: 20px
+  font-size: 16px
 }
 .link-dropdown:hover{
   padding-left: 7px;

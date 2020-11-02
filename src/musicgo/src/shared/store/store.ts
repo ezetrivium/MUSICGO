@@ -14,7 +14,7 @@ const store = new Vuex.Store({
   state: {
     token: localStorage.getItem('access_token') || null,
     user: localStorage.getItem('userLog') || null,
-    usersList: [] 
+    usersList: localStorage.getItem('usersList') || null
   },
   getters: {
     loggedIn(state) {
@@ -24,7 +24,7 @@ const store = new Vuex.Store({
       return JSON.parse(state.user!);
     },
     usersList(state){
-      return state.usersList
+      return JSON.parse(state.usersList!);
     },
     getToken(state){
       return state.token
@@ -42,18 +42,28 @@ const store = new Vuex.Store({
        state.token = null,
        state.user=null
      },
+     destroyUsersList(state) {
+      state.usersList = null
+    },
      retrieveUsersList(state, usersList){
         state.usersList = usersList
      }
   },
   actions: {
+     destroyUsersList(context) {
+     
+       if (context.getters.loggedIn) {
+              localStorage.removeItem('usersList')
+              context.commit('destroyUsersList')
+        }
+     },
      destroyToken(context) {
-      //  axios.defaults.headers.common['authorization'] = 'Bearer ' + context.state.token
-      //  lo de arriba es por si necesito enviar algo al backend cuando se desloguea
+  
        if (context.getters.loggedIn) {
               localStorage.removeItem('access_token')
               localStorage.removeItem('userLog')
-              context.commit('destroyToken')}
+              context.commit('destroyToken')
+      }
      },
      retrieveToken(context, obj:UserViewModel) {
       return new Promise((resolve,reject)=>{
@@ -108,6 +118,7 @@ const store = new Vuex.Store({
         userService.get().then(res=> {
           if(res.status === 200){
             context.commit('retrieveUsersList',res.data)
+            localStorage.setItem('usersList', JSON.stringify(res.data))
             resolve(res)
           }
         })

@@ -104,30 +104,30 @@ namespace DAL
             
         }
 
-        //#region Transacciones
-        //public void BeginTran()
-        //{
-        //    if (conexion == null || conexion.State != ConnectionState.Open)
-        //        OpenConnection();
+        #region Transacciones
+        public void BeginTran()
+        {
+            if (conexion == null || conexion.State != ConnectionState.Open)
+                OpenConnection();
 
-        //    transaccion = conexion.BeginTransaction();
-        //}
+            transaccion = conexion.BeginTransaction();
+        }
 
-        //public void CommitTran()
-        //{
-        //    transaccion.Commit();
-        //    transaccion.Dispose();
-        //    CloseConnection();
-        //}
+        public void CommitTran()
+        {
+            transaccion.Commit();
+            transaccion.Dispose();
+            CloseConnection();
+        }
 
-        //public void RollBackTran()
-        //{
-        //    transaccion.Rollback();
-        //    transaccion.Dispose();
-        //    CloseConnection();
-        //}
+        public void RollBackTran()
+        {
+            transaccion.Rollback();
+            transaccion.Dispose();
+            CloseConnection();
+        }
 
-        //#endregion
+        #endregion
 
         //#region SMO Management
         //public void MakeBackup(BackupData backup)

@@ -1,11 +1,17 @@
 ﻿using BE.Entities;
 using DAL.Mappers;
+using Newtonsoft.Json;
 using SL;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Management;
 using Utilities;
 using Utilities.Exceptions;
 using ViewModels.ViewModels;
@@ -14,14 +20,33 @@ namespace BLL.BLLs
 {
     public class UserBLL : BaseBLL<UserBE,UserViewModel>
     {
+
+        private readonly string[] formats = { ".jpg", ".jpeg" };    
         
         public UserBLL()
         {
             this.Dal = new UserDAL();
         }
 
+        public bool SetUserPermissions(UserViewModel viewModel)
+        {
+            
+            var entity = Mapper.Map<UserViewModel, UserBE>(viewModel);
+            var entityold = this.Dal.GetById(entity.Id);
+            PermissionDAL perDAL = new PermissionDAL();
+            if (entityold.Contract.Service == null )
+            {
+                return false;
 
-        public override bool Add(UserViewModel viewModel)
+            }
+            else
+            {
+                return perDAL.SetUserPermission(entity);
+            }
+            
+        }
+
+        public override bool Update(UserViewModel viewModel)
         {
             try
             {
@@ -29,12 +54,238 @@ namespace BLL.BLLs
                 {
                     UserBE entity;
                     entity = Mapper.Map<UserViewModel, UserBE>(viewModel);
-
+                    BinnacleSL binnacleSL = new BinnacleSL();
                     DVVerifier dvvv = new DVVerifier();
+                    Encryptor encryptor = new Encryptor();
+                   
 
-                    entity.DVH = dvvv.DVHCalculate(entity);
-                    bool result = this.Dal.Add(entity);
-                    return result;
+                    var entityold = this.Dal.GetById(entity.Id);
+                    var newentity = this.CheckUserName(entity);
+
+                    if (newentity.Id == Guid.Empty || entity.UserName == entityold.UserName)
+                    {
+                        if (!ValidImage(viewModel))
+                        {
+                            throw new BusinessException(Messages.InvalidImageFormat);
+                            //PROBAR
+                        }
+
+                        if (viewModel.File != null)
+                        {
+                            var guid = Guid.NewGuid().ToString();
+                            FileUtils.DeleteImageFile(entityold.ImgKey);
+                            string path = FileUtils.GetRepoImagePath(guid + Path.GetExtension(viewModel.File.FileName));
+                            viewModel.File.SaveAs(path);
+
+                            entity.ImgKey = guid + Path.GetExtension(viewModel.File.FileName);
+                        }
+                        PermissionDAL permissionDAL = new PermissionDAL();
+                   
+                        if (entity.Contract != null && entity.Contract.Service.Id != Guid.Empty && (entityold.Contract == null || (entity.Contract.Service.Id != entityold.Contract.Service.Id || entityold.Contract.ExpirationDate < DateTime.Now)))
+                        {                      
+                                entity.Permissions = permissionDAL.GetServicePermissions(entity.Contract.Service);
+                        }
+                        else 
+                        {
+                            entity.Contract = null;
+                            if (entityold.Contract != null)
+                            {
+                                entity.Permissions = permissionDAL.GetUserPermissions(entity);
+                            }
+                               
+                        }
+
+                        if(entity.Password != entityold.Password)
+                        {
+                            entity.Password = encryptor.Encrypt(entity.Password);
+                        }
+ 
+                        bool result = this.Dal.Update(entity);
+                        if (result)
+                        {
+
+
+                            UserDAL userdal = new UserDAL();
+                            var userDVH = userdal.GetDVHEntity(entity.Id);
+                            userDVH.DVH = dvvv.DVHCalculate(userDVH);
+                            userdal.SetDVH(userDVH);
+                            dvvv.DVCalculate("UserDAL");
+
+                            if (HttpContext.Current.User.Identity.IsAuthenticated) 
+                            {
+                                var identityClaims = (ClaimsIdentity)HttpContext.Current.User.Identity;
+                                string userObj = identityClaims.FindFirst("userObject").Value;
+
+                                binnacleSL.AddBinnacle(new BinnacleBE()
+                                {
+                                    User = JsonConvert.DeserializeObject<UserBE>(userObj),
+                                    Description = "Update User",
+                                });
+                            }
+                            else
+                            {
+                                binnacleSL.AddBinnacle(new BinnacleBE()
+                                {
+                                    User = userdal.GetById(entity.Id),
+                                    Description = "Update User",
+                                });
+                            }
+
+
+                            return true;
+                        }
+                        throw new BusinessException(Messages.ErrorUpdateUser);
+                    }
+                    else
+                    {
+                        throw new BusinessException(Messages.UserExists);
+                    }
+
+                }
+                else
+                {
+                    throw new BusinessException(Messages.InvalidData);
+                }
+
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+
+        public override bool Delete(Guid id)
+        {
+            try
+            {
+                BinnacleSL binnacleSL = new BinnacleSL();
+                DVVerifier dvvv = new DVVerifier();
+                var entityold = this.Dal.GetById(id);
+
+                bool result;
+                result = this.Dal.Delete(id);
+                if (!result)
+                {
+                    throw new BusinessException(Messages.ErrorDeleteUser);
+                }
+
+                FileUtils.DeleteImageFile(entityold.ImgKey);
+                dvvv.DVCalculate("UserDAL");
+
+
+                var identityClaims = (ClaimsIdentity)HttpContext.Current.User.Identity;
+
+                string userObj = identityClaims.FindFirst("userObject").Value;
+
+
+
+                binnacleSL.AddBinnacle(new BinnacleBE()
+                {
+                    User = JsonConvert.DeserializeObject<UserBE>(userObj),
+                    Description = "Delete User " + id,
+                });
+
+                return result;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+   
+
+        public override Guid Add(UserViewModel viewModel)
+        {
+            try
+            {
+                
+                if (this.IsValid(viewModel))
+                {
+                    UserBE entity;
+                    entity = Mapper.Map<UserViewModel, UserBE>(viewModel);
+                    BinnacleSL binnacleSL = new BinnacleSL();
+                    DVVerifier dvvv = new DVVerifier();
+                    Encryptor encryptor = new Encryptor();
+
+                    var entitynew = this.CheckUserName(entity);
+
+                    if(entitynew.Id == Guid.Empty)
+                    {
+                        if (!ValidImage(viewModel))  
+                        {
+                            throw new BusinessException(Messages.InvalidImageFormat);
+                            //PROBAR
+                        }
+
+                        if(viewModel.File != null)
+                        {
+                            var guid = Guid.NewGuid().ToString();
+                            string path = FileUtils.GetRepoImagePath(guid + Path.GetExtension(viewModel.File.FileName));
+                            viewModel.File.SaveAs(path);
+
+                            entity.ImgKey = guid + Path.GetExtension(viewModel.File.FileName);
+                        }
+                        
+
+                        PermissionDAL permissionDAL = new PermissionDAL();
+
+                        if (entity.Contract.Service.Id == Guid.Empty)
+                        {
+                            entity.Permissions.Add(permissionDAL.GetLoginPermission());
+                        }
+                        else
+                        {
+                            entity.Permissions = permissionDAL.GetServicePermissions(entity.Contract.Service);
+                        }
+
+                        
+
+                        entity.Password = encryptor.Encrypt(entity.Password);
+
+                        Guid result = this.Dal.Add(entity);
+
+                    
+
+                        if (result != Guid.Empty)
+                        {
+
+
+                            UserDAL userdal = new UserDAL();
+                            var userDVH = userdal.GetDVHEntity(result);
+                            userDVH.DVH = dvvv.DVHCalculate(userDVH);
+                            userdal.SetDVH(userDVH);
+                            dvvv.DVCalculate("UserDAL");
+
+
+
+                           
+
+                            binnacleSL.AddBinnacle(new BinnacleBE()
+                            {
+                                User = entity,
+                                Description = "Add User",
+                            });
+
+
+                            return result;
+                        }
+                        throw new BusinessException(Messages.ErrorAddUser);
+                    }
+                    else
+                    {
+                        throw new BusinessException(Messages.UserExists);
+                    }
+
                 }
                 else
                 {
@@ -84,9 +335,14 @@ namespace BLL.BLLs
 
                                 UserViewModel uservm = Mapper.Map<UserBE, UserViewModel>(userLogin);
 
-                                permissionBLL.CastPermissions(userLogin.Permissions, uservm.Permissions);
+                                List<PermissionViewModel> pervmList = new List<PermissionViewModel>();
 
+                                permissionBLL.CastPermissions(userLogin.Permissions, pervmList);
 
+                                uservm.Permissions = pervmList;
+
+                                var file = FileUtils.GetImageBytes(FileUtils.GetRepoImagePath(uservm.ImgKey));
+                                uservm.ImageBase64 = "data:image/jpg;base64," + Convert.ToBase64String(file);
                                 return uservm;
                             }
                             else
@@ -144,10 +400,8 @@ namespace BLL.BLLs
 
 
         public UserBE CheckUserName(UserBE user)
-        {
-            
+        {           
             UserDAL userDAL = new UserDAL();
-
             UserBE userbe = userDAL.GetUserByUserName(user);
 
             return userbe;
@@ -185,8 +439,9 @@ namespace BLL.BLLs
 
         public void Block(UserBE user)
         {
+            UserDAL userDAL = new UserDAL();
             user.Blocked = true;
-            this.Dal.Update(user);
+            userDAL.Block(user);
         }
 
 
@@ -249,7 +504,7 @@ namespace BLL.BLLs
 
                     if (CacheManager.GetWithTimeout("ResetPassword" + userBE.Id.ToString()) != null)
                     {
-
+                
                         string code = CacheManager.GetWithTimeout("ResetPassword" + userBE.Id.ToString()).ToString();
 
                         if (code == viewModel.Code)
@@ -296,12 +551,83 @@ namespace BLL.BLLs
 
 
 
+        public override UserViewModel GetById(Guid id)
+        {
+            try
+            {
+                PermissionsBLL permissionBLL = new PermissionsBLL();
+                UserBE entity;
+                entity = this.Dal.GetById(id);
+                entity.Permissions = permissionBLL.GetUserPermission(entity);
+
+                List<PermissionViewModel> pervmList = new List<PermissionViewModel>();
+
+                permissionBLL.CastPermissions(entity.Permissions, pervmList);
+
+                UserViewModel uvm = Mapper.Map<UserBE, UserViewModel>(entity);
+
+                uvm.Permissions = pervmList;
+
+
+                
+                var file = FileUtils.GetImageBytes(FileUtils.GetRepoImagePath(uvm.ImgKey));
+                uvm.ImageBase64 = "data:image/jpg;base64," + Convert.ToBase64String(file);
+                
+
+                return uvm;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        protected bool ValidImage(UserViewModel viewModel)
+        {
+            if(viewModel.File != null)
+            {
+                if (this.formats.Contains(Path.GetExtension(viewModel.File.FileName.ToLower())) && viewModel.File.ContentLength <= (1024 * 1024 * 5) )
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         protected override bool IsValid(UserViewModel viewModel)
         {
 
-            if(viewModel.UserName != "" && viewModel.Email !="" && viewModel.LastName != "" && viewModel.Password != "" && viewModel.Language.Id != Guid.Empty && viewModel.Name != "")
+            if(viewModel.UserName != "" &&
+                viewModel.UserName.Length > 4 &&
+                viewModel.UserName.Length < 13 &&
+                viewModel.Email !="" && 
+                viewModel.LastName != "" &&
+                viewModel.LastName.Length < 31 &&
+                viewModel.Password != "" &&
+                viewModel.Password.Length > 7 &&
+                viewModel.Password.Length < 33 &&
+                viewModel.Language.Id != Guid.Empty && 
+                viewModel.Name != "" &&
+                viewModel.Name.Length < 31)
             {
-                return true;
+                try
+                {
+                    MailAddress m = new MailAddress(viewModel.Email);
+
+                    return true;
+                }
+                catch (FormatException)
+                {
+                    return false;
+                }
             }
             else
             {

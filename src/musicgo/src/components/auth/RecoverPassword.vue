@@ -140,7 +140,12 @@ export default class RecoverPassword extends Vue {
           this.message = error;
         }
         else{
-          this.message = error.response.data;
+          if(error.response.data.Message != null){
+                 this.message = error.response.data.Message;
+            }
+            else{
+                this.message = error.response.data
+            }
         }
         this.icon ="x-circle"
         this.variant = "danger";

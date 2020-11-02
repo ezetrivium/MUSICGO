@@ -24,7 +24,14 @@ namespace BLL.BLLs
             return permisoDAL.GetUserPermissions(user);
         }
 
-
+        public IList<PermissionViewModel> GetRootPermissions()
+        {
+            PermissionDAL permisoDAL = new PermissionDAL();
+            List<PermissionViewModel> pervm = new List<PermissionViewModel>();
+            var permissions = permisoDAL.GetRootPermissions();
+            this.CastPermissions(permissions,pervm);
+            return pervm;
+        }
 
         public void CastPermissions(IList<PermissionBE> permissions, IList<PermissionViewModel> permissionViewModels)
         {
@@ -35,14 +42,29 @@ namespace BLL.BLLs
                 if (typeof(PermissionsGroupBE) == per.GetType())
                 {
                     PermissionsGroupBE pg = (PermissionsGroupBE)per;
-                    var pergrvm = Mapper.Map<PermissionsGroupBE, PermissionsGroupViewModel>(pg);
+                    //var pergrvm = Mapper.Map<PermissionsGroupBE, PermissionsGroupViewModel>(pg);
+                    PermissionsGroupViewModel pergrvm = new PermissionsGroupViewModel()
+                    {
+                        Id = pg.Id,
+                        Name = pg.Name
+                    };
                     permissionViewModels.Add(pergrvm);
-                    permissionViewModels.Remove(permissionViewModels.Where(p=>p.Id == pergrvm.Id).FirstOrDefault());
+                    //permissionViewModels.Remove(permissionViewModels.Where(p=>p.Id == pergrvm.Id).FirstOrDefault());
                     CastPermissions(pg.Permissions, pergrvm.Permissions);
                     
                 }
-                
-                
+                else if(typeof(PermissionBE) == per.GetType())
+                {
+                    PermissionBE p = (PermissionBE)per;
+                    PermissionViewModel pervm = new PermissionViewModel()
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    };
+                    permissionViewModels.Add(pervm);
+                }
+
+
             }
 
         }

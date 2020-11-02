@@ -13,12 +13,12 @@ namespace DAL.Mappers
 {
     public class BinnacleDAL : IDAL<BinnacleBE>
     {
-        public bool Add(BinnacleBE entity)
+        public Guid Add(BinnacleBE entity)
         {
             var dbContext = new DBContext();
             var parameters = Array.Empty<SqlParameter>();
 
-            parameters = new SqlParameter[2];
+            parameters = new SqlParameter[3];
             if (entity.User == null)
             {
                 parameters[0] = dbContext.CreateNullParameters("@UserID");
@@ -27,14 +27,16 @@ namespace DAL.Mappers
             {
                 parameters[0] = dbContext.CreateParameters("@UserID", entity.User.Id.ToString());
             }
-            
-            parameters[1] = dbContext.CreateParameters("@Description", entity.Description);
 
-            if(dbContext.Write("AddBinnacle", parameters) > 0)
+            var guid = Guid.NewGuid();
+            parameters[1] = dbContext.CreateParameters("@Description", entity.Description);
+            parameters[2] = dbContext.CreateParameters("@binnacleID", guid);
+
+            if (dbContext.Write("AddBinnacle", parameters) > 0)
             {
-                return true;
+                return guid;
             }
-            return false;
+            return Guid.Empty;
         }
 
 

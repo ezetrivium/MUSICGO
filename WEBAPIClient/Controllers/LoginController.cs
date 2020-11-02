@@ -1,12 +1,16 @@
-﻿using BLL.BLLs;
+﻿using BE.Entities;
+using BLL.BLLs;
 
 using Institucional.WEBAPIClient;
 using Microsoft.Owin.Testing;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -26,12 +30,14 @@ namespace WEBAPIClient.Controllers
         public UserViewModel Login(UserViewModel userViewModel)
         {
     
-                UserBLL userBLL = new UserBLL();
+            UserBLL userBLL = new UserBLL();
                 if (userViewModel == null)
                 {
                     throw new Exception(Messages.InvalidLoginRequest);
                 }
                 var user = userBLL.LogIn(userViewModel);
+
+            //CacheManager.Set(user.UserName, user);
 
                 // Invoke the "token" OWIN service to perform the login (POST /api/token)
                 //var testServer = TestServer.Create<Startup>();
@@ -48,7 +54,7 @@ namespace WEBAPIClient.Controllers
 
 
                 //var response = Request.CreateResponse(System.Net.HttpStatusCode.OK, user);
-                //string token = tokenServiceResponse.Content.ReadAsStringAsync().Result;
+                //string token = tokenServiceResponse.Content.ReadAsStringAsync().Rsesult;
                 //// Set headers for paging
                 //response.Headers.Add("Authorization", token);
                 //this.ResponseMessage(response);
@@ -57,6 +63,27 @@ namespace WEBAPIClient.Controllers
         
           
 
+
+
+        }
+
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("api/logout")]
+        public void Logout()
+        {
+            BinnacleSL binnacleSL = new BinnacleSL();
+            var identityClaims = (ClaimsIdentity)HttpContext.Current.User.Identity;
+
+            string userObj = identityClaims.FindFirst("userObject").Value;
+
+            binnacleSL.AddBinnacle(new BinnacleBE()
+            {
+                User = JsonConvert.DeserializeObject<UserBE>(userObj),
+                Description = "Login",
+            });
 
 
         }

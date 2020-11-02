@@ -39,5 +39,9 @@ namespace BE.Entities
         public ContractBE Contract { get; set; }
 
         public string ImgKey { get; set; }
+
+        public DateTime BlockedDateTime { get; set; }
+
+        
     }
 }

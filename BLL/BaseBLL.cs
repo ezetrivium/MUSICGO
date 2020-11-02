@@ -26,7 +26,7 @@ namespace BLL
 
         #region Public Methods
 
-        public virtual bool Add(TViewModel viewModel)
+        public virtual Guid Add(TViewModel viewModel)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace BLL
                 {
                     TEntity entity;
                     entity = Mapper.Map<TViewModel, TEntity>(viewModel);
-                    bool result = this.Dal.Add(entity);
+                    Guid result = this.Dal.Add(entity);
                     return result;
                 }
                 else
@@ -94,16 +94,15 @@ namespace BLL
         }
 
 
-        public virtual TViewModel Update(TViewModel viewModel)
+        public virtual bool Update(TViewModel viewModel)
         {
             try
             {
                 if (this.IsValid(viewModel))
                 {
-                    TEntity entity = this.Dal.GetById(viewModel.Id);
                     TEntity newValues = Mapper.Map<TViewModel, TEntity>(viewModel);
-                    Update(entity, newValues);
-                    return Mapper.Map<TEntity, TViewModel>(entity);
+
+                    return this.Dal.Update(newValues);
                 }
                 else
                 {

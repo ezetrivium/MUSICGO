@@ -10,7 +10,7 @@ namespace BLL.Interfaces
     public interface IBLL<TViewModel>
         where TViewModel : BaseViewModel
     {
-        bool Add(TViewModel viewModel);
+        Guid Add(TViewModel viewModel);
 
         bool Delete(Guid id);
 
@@ -18,7 +18,7 @@ namespace BLL.Interfaces
 
         TViewModel GetById(Guid id);
 
-        TViewModel Update(TViewModel viewModel);
+        bool Update(TViewModel viewModel);
 
     }
 }

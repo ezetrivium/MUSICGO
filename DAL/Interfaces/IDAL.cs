@@ -10,7 +10,7 @@ namespace DAL.Interfaces
     public interface IDAL<TEntity>
         where TEntity : BaseEntity
     {
-        bool Add(TEntity entity);
+        Guid Add(TEntity entity);
 
         bool Delete(Guid id);
 
