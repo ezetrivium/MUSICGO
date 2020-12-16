@@ -40,7 +40,13 @@ namespace BE.Entities
 
         public string ImgKey { get; set; }
 
-        public DateTime BlockedDateTime { get; set; }
+        public DateTime? BlockedDateTime { get; set; }
+
+
+        public List<SongBE> Songs { get; set; }
+
+
+        public List<AlbumBE> Albums { get; set; }
 
         
     }

@@ -17,9 +17,9 @@ namespace Utilities
         
 
 
-        public static string Get(string key)
+        public static object Get(string key)
         {
-            return cache.Get(key).ToString();
+            return cache.Get(key);
         }
 
         public static void Set(string key, object value)
@@ -45,7 +45,7 @@ namespace Utilities
 
         public static object GetWithTimeout(string key)
         {
-            var value = cache.Get(key).ToString();
+            var value = cache.Get(key);
             if (value == null) return null;
 
             DateTime? expDate = cache.Get(key + "ExpDate") as DateTime?;

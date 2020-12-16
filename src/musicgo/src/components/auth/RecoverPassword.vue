@@ -15,7 +15,7 @@
                     <b-icon :variant="variant" scale="1" :icon="icon"></b-icon>
                 </div>
                 <div class="icon-alert">
-                    <b-alert :variant="variant" v-model="showAlert">{{message}}</b-alert>
+                    <b-alert :variant="variant" v-model="showAlert">{{$t(message)}}</b-alert>
                 </div> 
             </b-col>           
         </b-row>
@@ -30,7 +30,7 @@
               no-body
             >
               <b-card-header>
-                <h2>Insert New Password</h2>
+                <h2>{{$t('enternewpassword')}}</h2>
               </b-card-header>
               <b-card-body>
                 <b-container>
@@ -38,55 +38,66 @@
                     <b-form action="#" @submit.prevent="updatePassword" style="width:100%">                   
                       <b-form-group
                         id="username"
-                        label="UserName:"
+                        :label="$t('username')"
                         label-for="input-username"
-                        description="Ingrese su nombre de usuario"
+                        :description="$t('enterusername')"
                       >
                         <b-form-input
                           id="input-username"
                           v-model="userUpdate.UserName"
                           type="text"
                           required
-                          placeholder="Enter username"
+                          :placeholder="$t('enterusername')"
                           class="input-text-primary"
+                          trim
                         ></b-form-input>
                       </b-form-group>
 
                       <b-form-group
                         id="password"
-                        label="Password:"
+                        :label="$t('password')"
                         label-for="input-password"
-                        description="Ingrese la contraseña"
+                        :description="$t('enterpassword')"
                       >
                         <b-form-input
                           id="input-password"
                           v-model="userUpdate.Password"
                           type="password"
                           required
-                          placeholder="Enter password"
+                          :state="passwordState()"
+                          :placeholder="$t('enterpassword')"
                           class="input-text-primary"
+                          aria-describedby="input-password-feedback"
                         ></b-form-input>
+                        <b-form-invalid-feedback :state="passwordState()" id="input-password-feedback">
+                              {{ $t("password_validate_char") }}
+                        </b-form-invalid-feedback>
                       </b-form-group>
 
                       <b-form-group
                         id="confirmPassword"
-                        label="Confirm Password:"
+                        :label="$t('confirmpassword')"
                         label-for="input-confirmPassword"
-                        description="Ingrese la contraseña Nuevamente"
+                        :description="$t('enterpasswordagain')"
                       >
                         <b-form-input
                           id="input-confirmPassword"
                           v-model="userUpdate.ConfirmPassword"
                           type="password"
                           required
-                          placeholder="Enter password again"
+                          :placeholder="$t('enterpasswordagain')"
                           class="input-text-primary"
+                          aria-describedby="input-passwordagain-feedback"
+                          :state="passwordConfirmState()"
                         ></b-form-input>
+                        <b-form-invalid-feedback :state="passwordConfirmState()" id="input-passwordagain-feedback">
+                              {{ $t("password_confirm_validate") }}
+                        </b-form-invalid-feedback>
                       </b-form-group>
                       <b-row> 
                         <b-col md="6" sm="12" style="text-align:center">
                          
-                          <b-button class="button-primary" type="submit" >Change Password</b-button>
+                          <b-button class="button-primary" type="submit" >{{$t('change_password')}}</b-button>
                         </b-col>
                       
                       </b-row>                     
@@ -119,8 +130,33 @@ export default class RecoverPassword extends Vue {
 
 
  @Prop({ type: String }) code: any;
+  passwordState(){
+        return (this.userUpdate.Password.length > 7 && this.userUpdate.Password.length < 33) ? true : false
+      }
+
+  passwordConfirmState(){
+        return (this.userUpdate.ConfirmPassword == this.userUpdate.Password) && this.userUpdate.ConfirmPassword.length > 0 ? true : false
+    }
+
+
+  checkFormValidity() {
+
+
+        if(!this.passwordState())
+          return false;
+
+        if(!this.passwordConfirmState())
+          return false;
+
+        return true;
+      }
 
   updatePassword(){
+
+    if(!this.checkFormValidity()){
+          return
+      }
+
     this.loading = true;
     this.showAlert = false;
     this.userUpdate.Code = this.code;
@@ -129,7 +165,7 @@ export default class RecoverPassword extends Vue {
       if (res.status === 200) {
         this.message = res.data;
         this.variant = "success";
-        this.icon = "check-box"
+        this.icon = "check-circle"
         this.showAlert = true;
 
       }

@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using Utilities;
+using BE;
+using BE.Entities;
 
 namespace DAL
 {
@@ -129,29 +131,85 @@ namespace DAL
 
         #endregion
 
-        //#region SMO Management
-        //public void MakeBackup(BackupData backup)
-        //{
-        //    var conString = "";
-        //    var serverConnection = new ServerConnection(conString);
-        //    server = new Server(serverConnection);
-        //    Database database = server.Databases[""];
-        //    Backup bkp = new Backup
-        //    {
-        //        Action = BackupActionType.Database,
-        //        Database = database.Name
-        //    };
-        //    bkp.Devices.AddDevice(@"", DeviceType.File);
-        //    try
-        //    {
-        //        bkp.SqlBackupAsync(server);
-        //    }
-        //    catch (SqlException)
-        //    {
+        #region SMO Management
+        public int MakeBackup(SqlParameter[] sqlParameters)
+        {
+            try
+            {
+                var rowAffected = 0;
+                OpenConnection();
 
-        //    }
-        //}
-        //#endregion
+                using (var sqlCommand = new SqlCommand
+                {
+                    CommandText = "MakeBackup",
+                    CommandType = CommandType.StoredProcedure,
+                    Connection = conexion
+                })
+                {
+                    sqlCommand.Parameters.AddRange(sqlParameters);
+
+                    try
+                    {
+                        rowAffected = sqlCommand.ExecuteNonQuery();
+                    }
+                    catch (SqlException e)
+                    {
+                        rowAffected = -1;
+                    }
+                }
+                CloseConnection();
+
+                return rowAffected;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public int MakeRestore(SqlParameter[] sqlParameters)
+        {
+            try
+            {
+                var rowAffected = 0;
+                
+
+                var conString = GlobalValues.ConnectionStringMaster;
+                conexion = new SqlConnection(conString);
+                conexion.Open();
+
+                using (var sqlCommand = new SqlCommand
+                {
+                    CommandText = "MakeRestore",
+                    CommandType = CommandType.StoredProcedure,
+                    Connection = conexion
+                })
+                {
+                    sqlCommand.Parameters.AddRange(sqlParameters);
+
+                    try
+                    {
+                        rowAffected = sqlCommand.ExecuteNonQuery();
+                    }
+                    catch (SqlException e)
+                    {
+                        rowAffected = 0;
+                    }
+                }
+                conexion.Close();
+                conexion.Dispose();
+
+                return rowAffected;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
 
         #region Parameters
         public SqlParameter CreateParameters(string paramName, string paramValue)

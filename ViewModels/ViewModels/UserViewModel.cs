@@ -42,5 +42,11 @@ namespace ViewModels.ViewModels
         public HttpPostedFileBase File { get; set; }
 
         public string ImageBase64 { get; set; }
+
+
+        public List<SongViewModel> Songs { get; set; }
+
+
+        public List<AlbumViewModel> Albums { get; set; }
     }
 }

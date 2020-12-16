@@ -9,6 +9,22 @@ import RecoverPassword from '@/components/auth/RecoverPassword.vue';
 import Users from '@/components/Users.vue';
 import ContractServiceComponent from '@/components/auth/ContractServiceComponent.vue';
 import Payment from '@/components/auth/Payment.vue';
+import LanguageConfiguration from '@/components/LanguageConfiguration.vue';
+import DictionaryComponent from '@/components/DictionaryComponent.vue';
+import BackUpRestore from '@/components/BackUpRestore.vue';
+import Binnacle from '@/components/Binnacle.vue';
+import MySongs from '@/components/MySongs.vue';
+import Songs from '@/components/Songs.vue';
+import MyAlbums from '@/components/MyAlbums.vue';
+import Play from '@/components/Play.vue';
+import Claims from '@/components/Claims.vue';
+import MyClaims from '@/components/MyClaims.vue';
+import SongsVoted from '@/components/SongsVoted.vue';
+import Permissions from '@/components/Permissions.vue';
+import CalculateSuccess from '@/components/CalculateSuccess.vue';
+import UsersReport from '@/components/UsersReport.vue';
+import SongsReport from '@/components/SongsReport.vue';
+
 
 Vue.use(Router);
 
@@ -78,7 +94,134 @@ export default new Router({
     meta: {
       requiresAuth: true
     },
-  },
+    
+    },
+    {
+      path: '/language',
+      name: 'LanguageComponent',
+      component: LanguageConfiguration,
+      meta: {
+        requiresAuth: true
+      },
+      
+    },
+    {
+      path: '/dictionary/:languageProp',
+      name: 'DictionaryComponent',
+      component: DictionaryComponent,
+      meta: {
+        requiresAuth: true
+      },
+      props: true
+      
+    },
 
+    {
+      path: '/backuprestore',
+      name: 'BackUpRestore',
+      component: BackUpRestore,
+      meta: {
+        requiresAuth: true
+      },
+ 
+      
+    },
+    {
+      path: '/binnacle',
+      name: 'Binnacle',
+      component: Binnacle,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/mysongs',
+      name: 'MySongs',
+      component: MySongs,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/myalbums',
+      name: 'MyAlbums',
+      component: MyAlbums,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/songs',
+      name: 'Songs',
+      component: Songs,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/play',
+      name: 'Play',
+      component: Play,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/claims',
+      name: 'Claims',
+      component: Claims,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/myclaims',
+      name: 'MyClaims',
+      component: MyClaims,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/songsvoted',
+      name: 'SongsVoted',
+      component: SongsVoted,
+      meta: {
+        requiresAuth: true //pasar esto al navbar
+      },
+    },
+    {
+      path: '/permissions',
+      name: 'Permissions',
+      component: Permissions,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/calculatesuccess',
+      name: 'CalculateSuccess',
+      component: CalculateSuccess,
+      meta: {
+        requiresAuth: true
+      },
+      props: true
+    },
+    {
+      path: '/usersreport',
+      name: 'UsersReport',
+      component: UsersReport,
+      meta: {
+        requiresAuth: true
+      },
+    },
+    {
+      path: '/songsreport',
+      name: 'SongsReport',
+      component: SongsReport,
+      meta: {
+        requiresAuth: true
+      },
+    },
   ],
 });

@@ -2,17 +2,34 @@
 <div style="margin-top:50px">
   <b-container fluid >
     <div>
-        <b-alert :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+        <b-alert :variant="variant" dismissible v-model="showAlert">{{$t(message)}}</b-alert>
     </div> 
     <div class="table-wrapper">
         <div class="table-title">
           <b-row>
               <b-col sm="4" >
-                <h2>Usuarios</h2>
+                  <div style="display:inline-flex">
+                    <h2>{{ $t("users") }}</h2>
+                    <b-button v-show="hasPermission('GetUsers')" @click="refreshUsers()"  class="repeat-button">
+                      <b-icon icon="arrow-repeat"></b-icon>
+                    </b-button>
+                  </div>
+                    
+                  
               </b-col>
               <b-col sm="8">
+                <b-button style="margin-left:10px" class="add-user-button">
+                  <download-excel worksheet="MusicGO"
+                      name="userTable.xls" :data="items" :fields="excelFields">
+                    <p class="add-button-text" >{{ $t("export_xls") }}</p>
+                  </download-excel>
+                  
+                </b-button>
+                <b-button style="margin-left:10px" class="add-user-button" @click="exportToPDF()">
+                  <p class="add-button-text" >{{ $t("export_pdf") }}</p>
+                </b-button>
                 <b-button class="add-user-button" v-b-modal.crud-modal v-show="hasPermission('AddUser')">
-                  <b-icon icon="plus" ></b-icon><p class="add-button-text" >Agregar Usuario</p>
+                  <b-icon icon="plus" ></b-icon><p class="add-button-text" >{{ $t("add_user") }}</p>
                 </b-button>
               </b-col>
           </b-row>
@@ -58,7 +75,7 @@
                     placeholder="Type to Search"
                   ></b-form-input>
                     <b-input-group-append>
-                      <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                      <b-button :disabled="!filter" @click="filter = ''">{{ $t("clear") }}</b-button>
                     </b-input-group-append>
                   </b-input-group>
                 </b-form-group>
@@ -83,9 +100,9 @@
             <div> 
               <b-table
               show-empty
-              emptyText="No hay nada para mostrar"
+              :emptyText="$t('no_items_to_show')"
               responsive="sm"
-
+              id="users-table"
               :items="items"
               :fields="fields"
               :current-page="currentPage"
@@ -95,6 +112,7 @@
               @filtered="onFiltered"
               :busy="isBusy"
               class="table-items"
+              thead-tr-class="table-head-row"
               >
 
               <template v-slot:table-busy>
@@ -129,7 +147,7 @@
               <b-modal 
               centered 
               id="update-modal" 
-              title="Modificar Usuario" 
+              :title="$t('update_user')"
               @ok="handleUpdateSubmit"
               @hidden="resetUpdateModal"
               size="lg"
@@ -139,6 +157,7 @@
               body-text-variant="light"
               footer-bg-variant="dark"
               footer-text-variant="light"
+              thead-tr-class="table-head-row"
               >
                 <b-container fluid>
                    <div style="text-align:center"> 
@@ -152,23 +171,23 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-update-username"
-                            label="Username:"
+                            :label="$t('username')"
                             label-for="input-text-update-username"
                             class="input-width"
                           >
                             <b-form-input
-                              
+                              trim
                               id="input-text-update-username"
                               v-model="userUpdated.UserName"
                               type="text"
                               required
-                              placeholder="Enter Username"
+                              :placeholder="$t('enterusername')"
                               :state="usernameState()"
                               aria-describedby="input-username-update-feedback"
                               
                             ></b-form-input>
                             <b-form-invalid-feedback :state="usernameState()" id="input-username-update-feedback">
-                              Su nombre de usuario debe tener entre 5 y 12 caracteres
+                              {{ $t("username_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -176,7 +195,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-update-name"
-                            label="Name:"
+                            :label="$t('name')"
                             label-for="input-text-update-name"
                             class="input-width"
                           >
@@ -185,13 +204,13 @@
                               v-model="userUpdated.Name"
                               type="text"                              
                               required
-                              
-                              placeholder="Enter Name"
+                              trim
+                              :placeholder="$t('entername')"
                               :state="nameState()"
                               aria-describedby="input-name-update-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="nameState()" id="input-name-update-feedback">
-                              Su nombre debe tener máximo 30 caracteres
+                              {{ $t("name_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -199,22 +218,22 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-update-lastname"
-                            label="Last Name:"
+                            :label="$t('lastname')"
                             label-for="input-update-text-lastname"
                             class="input-width"
                           >
                             <b-form-input
                               id="input-update-text-lastname"
-                              
+                              trim
                               v-model="userUpdated.LastName"
                               type="text"
                               required
-                              placeholder="Enter Last Name"
+                              :placeholder="$t('enterlastname')"
                               :state="lastnameState()"
                               aria-describedby="input-lastname-update-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="lastnameState()" id="input-lastname-update-feedback">
-                              Su apellido debe tener máximo 30 caracteres
+                              {{ $t("lastname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -245,7 +264,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-update-artistname"
-                            label="Artist Name:"
+                            :label="$t('artistname')"
                             label-for="input-update-text-artistname"
                             class="input-width"
                           >
@@ -253,14 +272,14 @@
                               id="input-update-text-artistname"
                               v-model="userUpdated.ArtistName"
                               type="text"
-                              
+                              trim
                               required
-                              placeholder="Enter Artist Name"
+                              :placeholder="$t('enterartistname')"
                               :state="artistnameState()"
                               aria-describedby="input-update-artistname-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="artistnameState()" id="input-update-artistname-feedback">
-                              Su nombre de artista debe tener máximo 50 caracteres
+                              {{ $t("artistname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -278,21 +297,22 @@
                           
                           <b-form-group
                             id="input-update-email"
-                            label="Email:"
+                            :label="$t('email')"
                             label-for="input-text-update-email"
                             class="input-width"
                           >
                             <b-form-input
+                              trim
                               id="input-text-update-email"
                               v-model="userUpdated.Email"
                               type="email"
                               :state="emailState()"
                               required
-                              placeholder="Enter Email"
+                              :placeholder="$t('enteremail')"
                               aria-describedby="input-update-email-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="emailState()" id="input-update-email-feedback">
-                              El email es requerido
+                              {{ $t("email_validate_char") }}
                             </b-form-invalid-feedback>
 
                           </b-form-group>
@@ -310,13 +330,13 @@
                               <b-row>
                                 <b-col lg="4" md="4" sm="4">
                                     <div >
-                                      Permisos
+                                      {{ $t("permissions") }}
                                     </div>
                                 </b-col>
                                 <b-col lg="8" md="8" sm="8">
                                     <div >
                                       <b-form-checkbox v-model="serviceUpdate" :disabled="serviceUpdateDisabled" name="check-admin" switch>
-                                          Servicio
+                                          {{ $t("service") }}
                                       </b-form-checkbox>
                                     </div>
                                 </b-col> 
@@ -355,13 +375,13 @@
                         </b-row>
 
                         <b-row class="mb-1 row-data">
-                           <b-form-group label="Image" style="width:80%; margin-left:20px; margin-bottom:0">
+                           <b-form-group :label="$t('image')" style="width:80%; margin-left:20px; margin-bottom:0">
                              <b-row >
                                <b-col lg="9" md="9" sm="6" >
                                   <b-form-file
                                   v-model="fileUpdate"
-                                  placeholder="Seleccione una imagen..."
-                                  drop-placeholder="Arratre una imagen..."
+                                  :placeholder="$t('select_an_image')"
+                                  :drop-placeholder="$t('drag_an_image')"
                                   
                                   accept=".jpg"
                                   @change="showPreviewImageUpdate($event)"
@@ -386,7 +406,7 @@
                         <b-row class="mb-1 row-data">
 
                            <b-form-group id="input-group-language-update" 
-                           label="Lenguaje:" 
+                           :label="$t('language')"
                            label-for="input-language-update" 
                            class="input-width"
                            required>
@@ -404,7 +424,7 @@
                                 >{{ option.Name }}</b-form-select-option>                           
                             </b-form-select>
                             <b-form-invalid-feedback :state="languageState()" id="input-language-update-feedback">
-                              El lenguaje es requerido
+                              {{ $t("language_validate") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
 
@@ -428,7 +448,7 @@
               <b-modal 
               centered 
               id="crud-modal" 
-              title="Crear Usuario" 
+              :title="$t('add_user')"
               @show="resetAddModal"
               @hidden="resetAddModal"
               @ok="handleAddSubmit"
@@ -453,23 +473,23 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-username"
-                            label="Username:"
+                            :label="$t('username')"
                             label-for="input-text-username"
                             class="input-width"
                           >
                             <b-form-input
-                              
+                              trim
                               id="input-text-username"
                               v-model="userCreated.UserName"
                               type="text"
                               required
-                              placeholder="Enter Username"
+                              :placeholder="$t('enterusername')"
                               :state="usernameState()"
                               aria-describedby="input-username-feedback"
                               
                             ></b-form-input>
                             <b-form-invalid-feedback :state="usernameState()" id="input-username-feedback">
-                              Su nombre de usuario debe tener entre 5 y 12 caracteres
+                              {{ $t("username_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -477,7 +497,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-name"
-                            label="Name:"
+                            :label="$t('name')"
                             label-for="input-text-name"
                             class="input-width"
                           >
@@ -486,13 +506,13 @@
                               v-model="userCreated.Name"
                               type="text"                              
                               required
-                              
-                              placeholder="Enter Name"
+                              trim
+                              :placeholder="$t('entername')"
                               :state="nameState()"
                               aria-describedby="input-name-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="nameState()" id="input-name-feedback">
-                              Su nombre debe tener máximo 30 caracteres
+                              {{ $t("name_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -500,22 +520,22 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-lastname"
-                            label="Last Name:"
+                            :label="$t('lastname')"
                             label-for="input-text-lastname"
                             class="input-width"
                           >
                             <b-form-input
                               id="input-text-lastname"
-                              
+                              trim
                               v-model="userCreated.LastName"
                               type="text"
                               required
-                              placeholder="Enter Last Name"
+                              :placeholder="$t('enterlastname')"
                               :state="lastnameState()"
                               aria-describedby="input-lastname-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="lastnameState()" id="input-lastname-feedback">
-                              Su apellido debe tener máximo 30 caracteres
+                              {{ $t("lastname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -523,7 +543,7 @@
                          <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-password"
-                            label="Password:"
+                            :label="$t('password')"
                             label-for="input-text-password"
                             class="input-width"
                           >
@@ -533,12 +553,12 @@
                               v-model="userCreated.Password"
                               type="password"
                               required
-                              placeholder="Enter Password"
+                              :placeholder="$t('enterpassword')"
                               :state="passwordState()"
                               aria-describedby="input-password-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="passwordState()" id="input-password-feedback">
-                              Su Contraseña debe tener entre 8 y 32 caracteres
+                              {{ $t("password_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -546,7 +566,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-artistname"
-                            label="Artist Name:"
+                            :label="$t('artistname')"
                             label-for="input-text-artistname"
                             class="input-width"
                           >
@@ -554,14 +574,14 @@
                               id="input-text-artistname"
                               v-model="userCreated.ArtistName"
                               type="text"
-                              
+                              trim
                               required
-                              placeholder="Enter Artist Name"
+                              :placeholder="$t('enterartistname')"
                               :state="artistnameState()"
                               aria-describedby="input-artistname-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="artistnameState()" id="input-artistname-feedback">
-                              Su nombre de artista debe tener máximo 50 caracteres
+                              {{ $t("artistname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -579,21 +599,22 @@
                           
                           <b-form-group
                             id="input-email"
-                            label="Email:"
+                            :label="$t('email')"
                             label-for="input-text-email"
                             class="input-width"
                           >
                             <b-form-input
+                              trim
                               id="input-text-email"
                               v-model="userCreated.Email"
                               type="email"
                               :state="emailState()"
                               required
-                              placeholder="Enter Email"
+                              :placeholder="$t('enteremail')"
                               aria-describedby="input-email-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="emailState()" id="input-email-feedback">
-                              El email es requerido
+                              {{ $t("email_validate_char") }}
                             </b-form-invalid-feedback>
 
                           </b-form-group>
@@ -611,13 +632,13 @@
                               <b-row>
                                 <b-col lg="4" md="4" sm="4">
                                     <div >
-                                      Permisos
+                                      {{ $t("permissions") }}
                                     </div>
                                 </b-col>
                                 <b-col lg="8" md="8" sm="8">
                                     <div >
                                       <b-form-checkbox v-model="adminChecked" name="check-admin" switch>
-                                          Servicio
+                                          {{ $t("service") }}
                                       </b-form-checkbox>
                                     </div>
                                 </b-col>
@@ -664,13 +685,13 @@
                         </b-row>
 
                         <b-row class="mb-1 row-data">
-                           <b-form-group label="Image" style="width:80%; margin-left:20px; margin-bottom:0">
+                           <b-form-group :label="$t('image')" style="width:80%; margin-left:20px; margin-bottom:0">
                              <b-row >
                                <b-col lg="9" md="9" sm="9">
                                   <b-form-file
                                   v-model="file"
-                                  placeholder="Seleccione una imagen..."
-                                  drop-placeholder="Arratre una imagen..."
+                                  :placeholder="$t('select_an_image')"
+                                  :drop-placeholder="$t('drag_an_image')"
                                   
                                   accept=".jpg"
                                   @change="showPreviewImage($event)"
@@ -695,7 +716,7 @@
                         <b-row class="mb-1 row-data">
 
                            <b-form-group id="input-group-language" 
-                           label="Lenguaje:" 
+                           :label="$t('language')"
                            label-for="input-language" 
                            class="input-width"
                            required>
@@ -713,7 +734,7 @@
                                 >{{ option.Name }}</b-form-select-option>                           
                             </b-form-select>
                             <b-form-invalid-feedback :state="languageState()" id="input-language-feedback">
-                              El lenguaje es requerido
+                              {{ $t("language_validate") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
 
@@ -780,7 +801,7 @@
                       
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Name</strong>
+                          <strong>{{ $t("name") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Name}}
@@ -789,7 +810,7 @@
 
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>LastName</strong>
+                          <strong>{{ $t("lastname") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.LastName}}
@@ -797,15 +818,15 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Blocked</strong>
+                          <strong>{{ $t("blocked") }}</strong>
                         </b-col>
                         <b-col cols="6">
-                          {{this.userSelected.Blocked ? 'Yes' : 'No' }}
+                          {{this.userSelected.Blocked ?  $t("yes")  : $t("no") }}
                         </b-col>
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Fecha de Contratación</strong>
+                          <strong>{{ $t("hire_date") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Contract !=null ? this.userSelected.Contract.HireDate.toString().split('T')[0] : 'Undefined' }}
@@ -813,7 +834,7 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Reproducciones</strong>
+                          <strong>{{ $t("plays") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Playbacks }}
@@ -827,7 +848,7 @@
                       
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Email</strong>
+                          <strong>{{ $t("email") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Email}}
@@ -835,7 +856,7 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Servicio</strong>
+                          <strong>{{ $t("service") }}</strong>
                         </b-col>
                         <b-col cols="6">
                            {{this.userSelected.Contract != null ? this.userSelected.Contract.Service.Name : 'Undefined'}}
@@ -843,7 +864,7 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Fecha de Expiración</strong>
+                          <strong>{{ $t("expiration_date") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Contract != null ? this.userSelected.Contract.ExpirationDate.toString().split('T')[0] : 'Undefined'}}
@@ -851,7 +872,7 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Lenguaje</strong>
+                          <strong>{{ $t("language") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.Language != null ? this.userSelected.Language.Name : 'Undefined'}}
@@ -859,7 +880,7 @@
                       </b-row>
                       <b-row class="mb-1 row-data">
                         <b-col cols="6">
-                          <strong>Artist Name</strong>
+                          <strong>{{ $t("artistname") }}</strong>
                         </b-col>
                         <b-col cols="6">
                           {{this.userSelected.ArtistName != null  ? this.userSelected.ArtistName : 'Undefined' }}
@@ -877,7 +898,7 @@
         </b-row>
         <b-row>
           <b-col md="6" class="results-length" >
-             <p>{{totalRows}} Resultados</p>
+             <p>{{totalRows}} {{ $t("results") }}</p>
           </b-col>
           <b-col md="6" class="my-1" sm="7">
             <b-pagination
@@ -908,7 +929,15 @@ import { ServiceViewModel } from '@/shared/classes/ServiceViewModel';
 import { PermissionViewModel } from '@/shared/classes/PermissionViewModel';
 import { Permissionshelper } from '../shared/classes/Permissions-helper';
 import { ContractViewModel } from '@/shared/classes/ContractViewModel';
-@Component({})
+import { jsPDF } from "jspdf";
+import 'jspdf-autotable';
+
+import downloadExcel from "vue-json-excel";
+@Component({
+  components:{
+        downloadExcel
+    }
+})
 export default class Users extends Vue {
 
     private isBusy : boolean = false;
@@ -950,19 +979,55 @@ export default class Users extends Vue {
       }
     ]
     private fields: any[] = [
-          { key: 'UserName', label: 'UserName', sortable: true},
+          { key: 'UserName', label:  'UserName' , sortable: true},
           { key: 'Name', label: 'Name', sortable: true},
           { key: 'LastName', label: 'LastName', sortable: true},
-          { key: 'Email', label: 'Email', sortable: true, class: 'text-center' },
+          { key: 'Email', label:'Email', sortable: true, class: 'text-center' },
           {
             key: 'Blocked',
             label: 'Blocked',
             formatter: (value : boolean,key : string, item : UserViewModel) => {
-              return item.Blocked ? 'Yes' : 'No'
+              return item.Blocked ? 'yes' : 'no'
             }
           },
           { key: 'actions', label: 'Actions' }
         ]
+
+
+    private excelFields: any = {
+      "Nombre de Usuario":"UserName",
+      "Nombre":"Name",
+      "Apellido":"LastName",
+      "Email":"Email",
+      "Bloqueado" : {
+        field: "Blocked",
+        callback:(value : any)=>{
+          return value ? 'Si' : 'No'
+        }
+      },
+
+    
+    }
+    
+    exportToPDF(){
+      const doc = new jsPDF() as any;
+      const users = this.items;
+      doc.autoTable({ 
+        
+        body:users,
+
+        
+          columns: [
+            { header: 'Nombre de Usuario', dataKey: 'UserName' },
+            { header: 'Nombre', dataKey: 'Name' },
+            { header: 'Apellido', dataKey: 'LastName' },
+            { header: 'Email', dataKey: 'Email' },
+            { header: 'Bloquedo', dataKey: 'Blocked' },
+          ],
+      })
+      
+      doc.save('usertable.pdf')
+    }
   
     created(){
       
@@ -972,15 +1037,9 @@ export default class Users extends Vue {
       this.getServices();
       this.getPermissions();
 
-      var users = this.$store.getters.usersList as UserViewModel[];
-      if(users != null && users.length>0){
-        
-        this.items = this.$store.getters.usersList;
-        this.totalRows = this.items.length
-      }
-      else{
-        this.getUsersList()
-      }
+      
+      this.getUsersList(false)
+      
       
     }
 
@@ -1042,6 +1101,10 @@ export default class Users extends Vue {
     else{
         this.userCreated.ImageBase64="";
     }
+   }
+
+   refreshUsers(){
+     this.getUsersList(true);
    }
 
    showPreviewImageUpdate(e : any){
@@ -1109,7 +1172,7 @@ export default class Users extends Vue {
       this.showAlert = false;
       this.userservice.add(formData)
       .then(response => {
-        this.getUsersList();
+        this.getUsersList(true);
         this.loadingAdd = false;
         this.variant = "success";       
         this.$bvModal.hide('crud-modal');
@@ -1155,7 +1218,7 @@ export default class Users extends Vue {
       this.showAlert = false;
       
       this.userservice.update(formData).then(response => {
-        this.getUsersList();
+        this.getUsersList(true);
         this.loadingUpdate = false;
         this.variant = "success";       
         this.$bvModal.hide('update-modal');
@@ -1242,8 +1305,8 @@ export default class Users extends Vue {
       deleteUser(item : any, index : number, button : any) {
         // this.infoModal.title = item.UserName;
         this.showAlert = false;
-        this.$bvModal.msgBoxConfirm('¿Estas seguro?', {
-          title: 'Confirmacion',
+        this.$bvModal.msgBoxConfirm(this.$t("are_you_sure?") as string, {
+          title: this.$t("confirmation") as string,
           size: 'sm',
           okVariant: 'success',
           centered: true,
@@ -1258,7 +1321,7 @@ export default class Users extends Vue {
             if(value){
               this.userservice.delete(item)
                 .then(response => {
-                  this.getUsersList();
+                  this.getUsersList(true);
                   
                   this.variant = "success";       
                   this.message = response.data
@@ -1341,10 +1404,10 @@ export default class Users extends Vue {
 
     
 
-    getUsersList(){
+    getUsersList(refresh:boolean){
       this.loading =true;
       this.isBusy = true;
-      this.$store.dispatch('retrieveUsersList')
+      this.userservice.getRefresh(refresh)
       .then(response => {
         this.items = response.data;
         this.loading = false;
@@ -1362,6 +1425,11 @@ export default class Users extends Vue {
 </script>
 
 <style >
+
+.table-head-row{
+  background-color: #343a40;
+  border: solid 0.5px;
+}
 
 @media (max-width: 600px) {
   .add-user-button{
@@ -1385,6 +1453,12 @@ export default class Users extends Vue {
 }
 }
 
+.repeat-button{
+  background-color:RGB(23,21,32);
+  margin-left: 10px;
+  padding-top: 0;
+  height: 37px;
+}
 
 .input-width{
   width:80%

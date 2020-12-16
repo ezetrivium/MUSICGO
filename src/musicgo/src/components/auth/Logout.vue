@@ -8,6 +8,8 @@ export default {
 
     this.$store.dispatch('destroyUsersList');
 
+    this.$store.dispatch('destroySongsList');
+
     this.$store.dispatch('destroyToken')
       .then(response => {
         this.$router.push({ name: 'home' })

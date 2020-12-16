@@ -14,7 +14,7 @@ using Utilities.Exceptions;
 
 namespace BLL
 {
-    public abstract class BaseBLL<TEntity, TViewModel> : IBLL<TViewModel>
+    public class BaseBLL<TEntity, TViewModel> : IBLL<TViewModel>
         where TEntity : BaseEntity
         where TViewModel : BaseViewModel
     {

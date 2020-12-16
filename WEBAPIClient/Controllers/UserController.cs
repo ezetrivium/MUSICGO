@@ -36,9 +36,24 @@ namespace WEBAPIClient.Controllers
         [HttpGet]
         [Authorize(Roles = "GetUsers")]
         [Route("api/users/get")]
-        public IEnumerable<UserViewModel> Get()
+        public IEnumerable<UserViewModel> Get(bool refresh)
         {
-            return this.userBLL.Get();
+            IList<UserViewModel> users = null;
+            var identityClaims = (ClaimsIdentity)HttpContext.Current.User.Identity;
+            string userObj = identityClaims.FindFirst("userObject").Value;
+            var userLogged = JsonConvert.DeserializeObject<UserBE>(userObj);
+            var uvm = Mapper.Map<UserBE, UserViewModel>(userLogged);
+
+            if (CacheManager.GetWithTimeout("users") == null || refresh)
+            {
+                users = this.userBLL.Get();
+                CacheManager.SetWithTimeout("users", users, TimeSpan.FromHours(12));
+            }
+            else
+            {
+                users = CacheManager.Get("users") as List<UserViewModel>;
+            }
+            return users;
         }
 
 
@@ -79,6 +94,16 @@ namespace WEBAPIClient.Controllers
             }
             
 
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = "GetUsers")]
+        [Route("api/users/getreport")]
+        public UserReportViewModel GetUsersReport()
+        {
+
+            return this.userBLL.GetReport();
         }
 
 

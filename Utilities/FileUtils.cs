@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,18 @@ namespace Utilities
         public static string GetRepoMusicPath(string fileName)
         {
             return Path.Combine(GlobalValues.FileMusicData, fileName);
+        }
+
+        public static void ConvertMp3ToWav(string _inPath_,string _outPath)
+        {
+            using (Mp3FileReader reader = new Mp3FileReader(_inPath_))
+            {
+                using (WaveStream pcm = WaveFormatConversionStream.CreatePcmStream(reader))
+                {
+                    WaveFileWriter.CreateWaveFile(_outPath, pcm);
+                }
+            }
+
         }
 
         public static string GetStandardImagePath()

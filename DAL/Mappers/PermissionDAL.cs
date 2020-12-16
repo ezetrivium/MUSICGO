@@ -14,9 +14,38 @@ namespace DAL.Mappers
     public class PermissionDAL : IDAL<PermissionBE>
     {
         #region interface methods
-        public Guid Add(PermissionBE entity)
+        public Guid Add(PermissionBE entity, PermissionBE parent)
         {
-            throw new NotImplementedException();
+            var dbContext = new DBContext();
+            try
+            {
+
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+
+
+                var permissionguid = Guid.NewGuid();
+                parameters = new SqlParameter[3];
+
+                parameters[0] = dbContext.CreateParameters("@permissionID", permissionguid);
+                parameters[1] = dbContext.CreateParameters("@name", entity.Name);
+                parameters[2] = parent.Id == Guid.Empty ? dbContext.CreateNullParameters("@parentID") :dbContext.CreateParameters("@parentID", parent.Id);
+
+
+
+                if (dbContext.Write("AddPermission", parameters) > 0)
+                {
+                    return permissionguid;
+
+                }
+
+                return Guid.Empty;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(Messages.Generic_Error);
+            }
         }
 
         public bool Delete(Guid id)
@@ -36,17 +65,144 @@ namespace DAL.Mappers
 
         }
 
+
+        public IList<PermissionBE> GetPermissionsGroups()
+        {
+            var dbContext = new DBContext();
+            var parameters = Array.Empty<SqlParameter>();
+            DataSet dataSet;
+            List<PermissionBE> permissions = new List<PermissionBE>();
+
+            dataSet = dbContext.Read("GetPermissionsGroups", null);
+
+            if (dataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in dataSet.Tables[0].Rows)
+                {
+                    permissions.Add(new PermissionBE()
+                    {
+                        Id = Helper.GetGuidDB(dr["PermissionID"]),
+                        Name = Helper.GetStringDB(dr["Name"]),
+
+                    });
+                }
+
+            }
+
+            return permissions;
+
+
+        }
+
+        public IList<PermissionBE> GetChildPermissions()
+        {
+            var dbContext = new DBContext();
+            var parameters = Array.Empty<SqlParameter>();
+            DataSet dataSet;
+            List<PermissionBE> permissions = new List<PermissionBE>();
+
+            dataSet = dbContext.Read("GetChildPermissions", null);
+
+            if (dataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow dr in dataSet.Tables[0].Rows)
+                {
+                    permissions.Add(new PermissionBE()
+                    {
+                        Id = Helper.GetGuidDB(dr["PermissionID"]),
+                        Name = Helper.GetStringDB(dr["Name"]),
+
+                    });
+                }
+
+            }
+
+            return permissions;
+
+
+        }
+
         public PermissionBE GetById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public bool Update(PermissionBE viewModel)
+        public bool Update(PermissionBE entity)
         {
-            throw new NotImplementedException();
+            var dbContext = new DBContext();
+            try
+            {
+
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+                PermissionDAL permissionDAL = new PermissionDAL();
+
+                parameters = new SqlParameter[2];
+
+                parameters[0] = dbContext.CreateParameters("@permissionID", entity.Id);
+                parameters[1] = dbContext.CreateParameters("@name", entity.Name);
+
+
+
+
+                if (dbContext.Write("UpdatePermission", parameters) > 0)
+                {
+
+                    return true;
+
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(Messages.Generic_Error);
+            }
         }
 
+
+
+
+
+
         #endregion
+
+        public bool AddPermissionGroup(PermissionBE entity, PermissionBE parent)
+        {
+            var dbContext = new DBContext();
+            try
+            {
+
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+                PermissionDAL permissionDAL = new PermissionDAL();
+
+                parameters = new SqlParameter[2];
+
+                parameters[0] = dbContext.CreateParameters("@permissionID", entity.Id);
+                parameters[1] = dbContext.CreateParameters("@parentID", parent.Id);
+
+
+
+
+                if (dbContext.Write("AddPermissionGroup", parameters) > 0)
+                {
+
+                    return true;
+
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+
 
         public bool DeleteUserPermission(UserBE entity, DBContext dbCon)
         {
@@ -391,32 +547,43 @@ namespace DAL.Mappers
 
         private static void AddChildren(List<PermissionBE> permissions, DataSet ds, PermissionsGroupBE node)
         {
-
-            foreach (var per in permissions)
+            try
             {
-               List<PermissionBE> list = new List<PermissionBE>(); 
-               foreach(DataRow dr in ds.Tables[0].Rows)
-               {
-                    if (node.Id.ToString() == dr["ParentID"].ToString())
+                foreach (var per in permissions)
+                {
+                    List<PermissionBE> list = new List<PermissionBE>();
+                    foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        if (dr["PermissionID"].ToString() == per.Id.ToString())
+                        if (node.Id.ToString() == dr["ParentID"].ToString())
                         {
-                            if (!node.Permissions.Any(p => p == per))
+                            if (dr["PermissionID"].ToString() == per.Id.ToString())
                             {
-                                node.Permissions.Add(per);
-                            }                           
-                            foreach (var child in node.Permissions)
-                            {
-                                if (typeof(PermissionsGroupBE) == child.GetType())
-                                    AddChildren(permissions, ds, (PermissionsGroupBE)child);
-                               
+                                if (!node.Permissions.Any(p => p == per))
+                                {
+                                    node.Permissions.Add(per);
+                                }
+                                foreach (var child in node.Permissions)
+                                {
+                                    if (typeof(PermissionsGroupBE) == child.GetType())
+                                        AddChildren(permissions, ds, (PermissionsGroupBE)child);
+
+                                }
+                                break;
                             }
-                            break;
-                        }                      
+                        }
                     }
-               }
-               
+
+                }
             }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+        public Guid Add(PermissionBE entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

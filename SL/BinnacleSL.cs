@@ -24,6 +24,7 @@ namespace SL
         {
             var binnacleDAL = new BinnacleDAL();
             binnacleDAL.Add(binnacle);
+
         }
     }
 }

@@ -1,6 +1,8 @@
 import { LanguageViewModel } from './LanguageViewModel';
 import { PermissionViewModel } from './PermissionViewModel';
 import { ContractViewModel } from './ContractViewModel';
+import { SongViewModel } from './SongViewModel';
+import { AlbumViewModel } from './AlbumViewModel';
 import { Guid } from "guid-typescript";
 export class UserViewModel{
     public Id: string = '00000000-0000-0000-0000-000000000000';
@@ -17,5 +19,10 @@ export class UserViewModel{
     public User : UserViewModel | null = null;
     
     public ImageBase64: string | null | ArrayBuffer = '';
+
     public Contract: ContractViewModel | null = new ContractViewModel();
+
+    public Songs: SongViewModel[] = [];
+
+    public Albums: AlbumViewModel[] = [];
 }

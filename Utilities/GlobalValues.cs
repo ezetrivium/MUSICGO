@@ -11,6 +11,8 @@ namespace Utilities
         #region Consts
 
         private const string WEBCONNECTION_STRING_NAME = "ConnectionString.Name";
+        private const string CONNECTION_STRING_NAME_MASTER = "ConnectionStringMaster.Name";
+
         private const string WEBMUSICGO_LOGGER_NAME = "MusicGO.Logger";
 
         private const string RECOVER_PASSWORD_URL = "RecoverPasswordURL";
@@ -18,6 +20,8 @@ namespace Utilities
         private const string FILE_MUSIC_DATA = "FileMusicData";
 
         private const string FILE_IMAGES_DATA = "FileImagesData";
+
+        private const string BACKUP_REPO = "BackupRepo";
 
         private const string IMAGE_STANDARD = "ImageStandard";
 
@@ -36,6 +40,8 @@ namespace Utilities
         #region Properties
 
         public static string WebConnectionString => ConfigurationUtils.GetConnectionString(ConnectionStringName);
+
+        public static string ConnectionStringMaster => ConfigurationUtils.GetConnectionString(ConnectionStringNameMaster);
         public static string WebLoggerName => ConfigurationUtils.GetAppSettings(WEBMUSICGO_LOGGER_NAME);
 
         public static string RecoverPasswordURL => ConfigurationUtils.GetAppSettings(RECOVER_PASSWORD_URL);
@@ -43,6 +49,9 @@ namespace Utilities
         public static string FileMusicData => ConfigurationUtils.GetAppSettings(FILE_MUSIC_DATA);
 
         public static string FileImagesData => ConfigurationUtils.GetAppSettings(FILE_IMAGES_DATA);
+
+
+        public static string BackupRepo => ConfigurationUtils.GetAppSettings(BACKUP_REPO);
 
         public static string ImageStandard => ConfigurationUtils.GetAppSettings(IMAGE_STANDARD);
 
@@ -64,6 +73,9 @@ namespace Utilities
         #region Private Properties
 
         private static string ConnectionStringName => ConfigurationUtils.GetAppSettings(WEBCONNECTION_STRING_NAME);
+
+
+        private static string ConnectionStringNameMaster => ConfigurationUtils.GetAppSettings(CONNECTION_STRING_NAME_MASTER);
 
         #endregion
     }

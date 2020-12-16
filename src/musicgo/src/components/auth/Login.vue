@@ -20,34 +20,35 @@
               no-body
             >
               <b-card-header>
-                <h2>Recover Password</h2>
+                <h2>{{ $t("recover_password") }}</h2>
               </b-card-header>
               <b-card-body>
                 <b-container>
                   <b-row>
                     <b-form action="#" @submit.prevent="recoverPassword" style="width:100%">
                       <div>
-                        <b-alert :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+                        <b-alert :variant="variant" dismissible v-model="showAlert">{{ $t(message) }}</b-alert>
                       </div>                    
                       <b-form-group
                         id="usernameRecover"
-                        label="UserName:"
+                        :label="$t('username')"
                         label-for="input-username-recover"
-                        description="Ingrese el nombre de usuario"
+                        :description="$t('enterusername')"
                       >
                         <b-form-input
                           id="input-username-recover"
                           v-model="userNameToRecover.UserName"
                           type="text"
                           required
-                          placeholder="Enter username"
+                          :placeholder="$t('enterusername')"
                           class="input-text-primary"
+                          trim
                         ></b-form-input>
                       </b-form-group>
                    
                       <b-row> 
-                        <b-col md="6" sm="12" style="text-align:center">                       
-                          <b-button class="button-primary" type="submit">Recover Password</b-button>
+                        <b-col md="12" sm="12" lg="6" style="text-align:center">                       
+                          <b-button class="button-primary" type="submit">{{ $t("recover_password") }}</b-button>
                         </b-col>
                    
                       </b-row>                     
@@ -70,60 +71,61 @@
               no-body
             >
               <b-card-header>
-                <h2>Login</h2>
+                <h2>{{ $t("login") }}</h2>
               </b-card-header>
               <b-card-body>
                 <b-container>
                   <b-row>
                     <b-form action="#" @submit.prevent="login" style="width:100%">
                       <div>
-                        <b-alert :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+                        <b-alert :variant="variant" dismissible v-model="showAlert">{{$t(message)}}</b-alert>
                       </div>                    
                       <b-form-group
                         id="username"
-                        label="UserName:"
+                        :label="$t('username')"
                         label-for="input-username"
-                        description="Ingrese su nombre de usuario"
+                        :description="$t('enterusername')"
                       >
                         <b-form-input
                           id="input-username"
                           v-model="userLogin.UserName"
                           type="text"
                           required
-                          placeholder="Enter username"
+                          :placeholder="$t('enterusername')"
                           class="input-text-primary"
+                          trim
                         ></b-form-input>
                       </b-form-group>
 
                       <b-form-group
                         id="password"
-                        label="Password:"
+                        :label="$t('password')"
                         label-for="input-password"
-                        description="Ingrese la contraseña"
+                        :description="$t('enterpassword')"
                       >
                         <b-form-input
                           id="input-password"
                           v-model="userLogin.Password"
                           type="password"
                           required
-                          placeholder="Enter password"
+                          :placeholder="$t('enterpassword')"
                           class="input-text-primary"
                         ></b-form-input>
                       </b-form-group>
                       <b-row> 
                         <b-col md="6" sm="12" style="text-align:center">
                          
-                          <b-button class="button-primary" type="submit" >Login</b-button>
+                          <b-button class="button-primary" type="submit" >{{$t("login")}}</b-button>
                         </b-col>
                         <b-col md="6" sm="12" style="text-align:center">
                         
-                            <b-button class="forgot-password" variant="link" v-on:click="changeRecoverPassword">Forgot your password?</b-button>                    
+                            <b-button class="forgot-password" variant="link" v-on:click="changeRecoverPassword">{{$t("forgot_password?")}}</b-button>                    
                         </b-col>
                       
                       </b-row>  
                       <b-row>
                         <b-col style="text-align:center; padding-top:20px">
-                            <small>¿No tienes una cuenta?  <router-link :to="{ name: 'Subscribe' }">Regístrate</router-link></small>
+                            <small>{{$t("You_do_not_have_an_account?")}}  <router-link :to="{ name: 'Subscribe' }">{{$t("sign_up")}}</router-link></small>
                         </b-col>
                       </b-row>                    
                     </b-form>
@@ -144,6 +146,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { AuthenticationViewModel } from "../../shared/classes/AuthenticationViewModel";
 import userService, { UserService } from "../../shared/services/UserService";
 import { UserViewModel } from '../../shared/classes/UserViewModel';
+import { LanguageHelper } from "@/shared/classes/Language-helper";
 @Component({})
 export default class Login extends Vue {
   private userservice: UserService = userService;
@@ -161,6 +164,8 @@ export default class Login extends Vue {
       .dispatch("retrieveToken", this.userLogin)
       .then(response => {
         this.loading = false;
+        
+        this.$i18n.locale = response.data.Language.Code;
         this.$router.push({ name: "home" });
       })
       .catch(error => {

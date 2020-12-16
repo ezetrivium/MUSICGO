@@ -55,19 +55,29 @@ namespace DAL.Mappers
             var binnacleList = new List<BinnacleBE>();
             var dataTable = dbContext.Read("GetBinnacle", parameters);
 
+            UserBE user = null;
+
             foreach (DataRow row in dataTable.Tables[0].Rows)
             {
                 var register = new BinnacleBE
                 {
                     Id = Guid.Parse(row["BinnacleID"].ToString()),
                     Description = row["Description"].ToString(),
-                    Date = DateTime.Parse(row["Date"].ToString()),
-                    User = new UserBE
+                    Date = DateTime.Parse(row["Date"].ToString())
+                    
+                   
+                };
+
+                if (row["UserID"] != null)
+                {
+                    user = new UserBE
                     {
                         Id = Guid.Parse(row["UserID"].ToString()),
                         UserName = row["UserName"].ToString(),
-                    }
-                };
+                    };
+                }
+
+                register.User = user;
 
                 binnacleList.Add(register);
             }

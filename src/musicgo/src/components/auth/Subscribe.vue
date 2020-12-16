@@ -5,7 +5,7 @@
      <b-card-title class="form-title">
           <b-row>
               <b-col>
-                <h2>Suscribirse</h2>
+                <h2>{{ $t("subscribe") }}</h2>
               </b-col>
 
           </b-row>
@@ -17,7 +17,7 @@
         </div>
         <div> 
             <div>
-                <b-alert :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+                <b-alert :variant="variant" dismissible v-model="showAlert">{{$t(message)}}</b-alert>
             </div> 
             <b-form  ref="formsuscribe" @submit.stop.prevent="handleAddSubmit" v-show="!loading">
                     <b-row class="mb-1">
@@ -26,7 +26,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-username"
-                            label="Username:"
+                            :label="$t('username')"
                             label-for="input-text-username"
                             class="input-width"
                           >
@@ -36,13 +36,13 @@
                               v-model="userCreated.UserName"
                               type="text"
                               required
-                              placeholder="Enter Username"
+                              :placeholder="$t('enterusername')"
                               :state="usernameState()"
                               aria-describedby="input-username-feedback"
-                              
+                              trim
                             ></b-form-input>
                             <b-form-invalid-feedback :state="usernameState()" id="input-username-feedback">
-                              Su nombre de usuario debe tener entre 5 y 12 caracteres
+                              {{ $t("username_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -50,7 +50,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-name"
-                            label="Name:"
+                            :label="$t('name')"
                             label-for="input-text-name"
                             class="input-width"
                           >
@@ -59,13 +59,13 @@
                               v-model="userCreated.Name"
                               type="text"                              
                               required
-                              
-                              placeholder="Enter Name"
+                              trim
+                              :placeholder="$t('entername')"
                               :state="nameState()"
                               aria-describedby="input-name-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="nameState()" id="input-name-feedback">
-                              Su nombre debe tener máximo 30 caracteres
+                              {{ $t("name_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -73,22 +73,22 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-lastname"
-                            label="Last Name:"
+                            :label="$t('lastname')"
                             label-for="input-text-lastname"
                             class="input-width"
                           >
                             <b-form-input
                               id="input-text-lastname"
-                              
+                              trim
                               v-model="userCreated.LastName"
                               type="text"
                               required
-                              placeholder="Enter Last Name"
+                              :placeholder="$t('enterlastname')"
                               :state="lastnameState()"
                               aria-describedby="input-lastname-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="lastnameState()" id="input-lastname-feedback">
-                              Su apellido debe tener máximo 30 caracteres
+                              {{ $t("lastname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -96,7 +96,7 @@
                          <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-password"
-                            label="Password:"
+                            :label="$t('password')"
                             label-for="input-text-password"
                             class="input-width"
                           >
@@ -106,12 +106,12 @@
                               v-model="userCreated.Password"
                               type="password"
                               required
-                              placeholder="Enter Password"
+                              :placeholder="$t('enterpassword')"
                               :state="passwordState()"
                               aria-describedby="input-password-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="passwordState()" id="input-password-feedback">
-                              Su Contraseña debe tener entre 8 y 32 caracteres
+                              {{ $t("password_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -130,21 +130,22 @@
                           
                           <b-form-group
                             id="input-email"
-                            label="Email:"
+                            :label="$t('email')"
                             label-for="input-text-email"
                             class="input-width"
                           >
                             <b-form-input
+                              trim
                               id="input-text-email"
                               v-model="userCreated.Email"
                               type="email"
                               :state="emailState()"
                               required
-                              placeholder="Enter Email"
+                              :placeholder="$t('enteremail')"
                               aria-describedby="input-email-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="emailState()" id="input-email-feedback">
-                              El email es requerido
+                              {{ $t("email_validate_char") }}
                             </b-form-invalid-feedback>
 
                           </b-form-group>
@@ -159,8 +160,8 @@
                                <b-col lg="9" md="9" sm="9">
                                   <b-form-file
                                   v-model="file"
-                                  placeholder="Seleccione una imagen..."
-                                  drop-placeholder="Arratre una imagen..."
+                                  :placeholder="$t('select_an_image')"
+                                  :drop-placeholder="$t('drag_an_image')"
                                   
                                   accept=".jpg"
                                   @change="showPreviewImage($event)"
@@ -185,7 +186,7 @@
                         <b-row class="mb-1 row-data">
 
                            <b-form-group id="input-group-language" 
-                           label="Lenguaje:" 
+                           :label="$t('language')"
                            label-for="input-language" 
                            class="input-width"
                            required>
@@ -203,7 +204,7 @@
                                 >{{ option.Name }}</b-form-select-option>                           
                             </b-form-select>
                             <b-form-invalid-feedback :state="languageState()" id="input-language-feedback">
-                              El lenguaje es requerido
+                              {{ $t("language_validate") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
 
@@ -213,7 +214,7 @@
                         <b-row class="mb-1 row-data">
                           <b-form-group
                             id="input-artistname"
-                            label="Artist Name:"
+                            :label="$t('artistname')"
                             label-for="input-text-artistname"
                             class="input-width"
                           >
@@ -221,14 +222,14 @@
                               id="input-text-artistname"
                               v-model="userCreated.ArtistName"
                               type="text"
-                              
+                              trim
                               required
-                              placeholder="Enter Artist Name"
+                              :placeholder="$t('enterartistname')"
                               :state="artistnameState()"
                               aria-describedby="input-artistname-feedback"
                             ></b-form-input>
                             <b-form-invalid-feedback :state="artistnameState()" id="input-artistname-feedback">
-                              Su nombre de artista debe tener máximo 50 caracteres
+                              {{ $t("artistname_validate_char") }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </b-row>
@@ -243,7 +244,7 @@
                 <b-row> 
                     <b-col md="12" sm="12" style="text-align:center; margin-top:10px">
                          
-                        <b-button class="button-primary" type="submit" >Suscribirse</b-button>
+                        <b-button class="button-primary" type="submit" >{{ $t("subscribe") }}</b-button>
                     </b-col>
                 </b-row>
             </b-form>

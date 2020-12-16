@@ -124,7 +124,7 @@ namespace DAL.Mappers
                         ImgKey = Helper.GetStringDB(dr["ImgKey"]),
                         DVH = Helper.GetStringDB(dr["DVH"]),
                         ArtistName = Helper.GetStringDB(dr["ArtistName"]),
-                        BlockedDateTime = Helper.GetDateTimeDB(dr["BlockedDateTime"]),
+                        BlockedDateTime = Helper.GetDateTimeDBNull(dr["BlockedDateTime"]),
                         Contract = new ContractBE()
                         {
                             Id = Helper.GetGuidDB(dr["ContractID"])
@@ -173,7 +173,7 @@ namespace DAL.Mappers
                             ImgKey = Helper.GetStringDB(dr["ImgKey"]),
                             DVH = Helper.GetStringDB(dr["DVH"]),
                             ArtistName = Helper.GetStringDB(dr["ArtistName"]),
-                            BlockedDateTime = Helper.GetDateTimeDB(dr["BlockedDateTime"]),
+                            BlockedDateTime = Helper.GetDateTimeDBNull(dr["BlockedDateTime"]),
                             Contract = new ContractBE()
                             {
                                 Id = Helper.GetGuidDB(dr["ContractID"])
@@ -235,6 +235,100 @@ namespace DAL.Mappers
             }
             
         }
+
+
+        public IList<UserBE> GetUserReport()
+        {
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                List<UserBE> Users = new List<UserBE>();
+
+                dataSet = dbContext.Read("GetUsersReport", null);
+
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dataSet.Tables[0].Rows)
+                    {
+                        Users.Add(new UserBE()
+                        {
+                            Id = Helper.GetGuidDB(dr["UserID"]),
+                            Name = Helper.GetStringDB(dr["Name"]),
+                            UserName = Helper.GetStringDB(dr["UserName"]),
+                            LastName = Helper.GetStringDB(dr["LastName"]),
+                            Language = new LanguageBE(),
+                            Playbacks = Helper.GetIntDB(dr["Playbacks"]),
+                            Password = Helper.GetStringDB(dr["Password"]),
+                            Email = Helper.GetStringDB(dr["Email"]),
+                            Blocked = Helper.GetBoolDB(dr["Blocked"]),
+                            ImgKey = Helper.GetStringDB(dr["ImgKey"]),
+                            ArtistName = Helper.GetStringDB(dr["ArtistName"]),
+                            Contract = new ContractBE()
+                        });
+                    }
+
+                }
+
+
+                return Users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+
+        }
+
+        public int GetInactiveUsers()
+        {
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                int result = 0;
+
+                dataSet = dbContext.Read("GetInactiveUsers", null);
+
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    result = Helper.GetIntDB(dataSet.Tables[0].Rows[0]["Count"]);
+                }
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+        public int GetTotalUsers()
+        {
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                int result = 0;
+
+                dataSet = dbContext.Read("GetTotalUsers", null);
+
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    result = Helper.GetIntDB(dataSet.Tables[0].Rows[0]["Count"]);
+                }
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
+
 
         public UserBE GetById(Guid id)
         {
@@ -332,7 +426,7 @@ namespace DAL.Mappers
                 dbContext.BeginTran();
                 if (dbContext.Write("UpdateUser", parameters) > 0)
                 {
-
+                    
 
                     permissionDAL.DeleteUserPermission(entity, dbContext);
                     
@@ -354,6 +448,32 @@ namespace DAL.Mappers
             }
             
         }
+
+        public bool DeleteContract(Guid id)
+        {
+            try
+            {
+                var dbContext = new DBContext();
+                var dataSet = new DataSet();
+                var parameters = Array.Empty<SqlParameter>();
+
+                parameters = new SqlParameter[1];
+
+                parameters[0] = dbContext.CreateParameters("@userID", id);
+
+                if (dbContext.Write("DeleteContract", parameters) > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+      
+
         public bool Block(UserBE user)
         {
             try

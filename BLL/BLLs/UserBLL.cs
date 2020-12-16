@@ -303,6 +303,35 @@ namespace BLL.BLLs
             }
         }
 
+
+        public UserReportViewModel GetReport()
+        {
+            try
+            {
+                UserDAL userDAL = new UserDAL();
+
+                var totalUsers = userDAL.GetTotalUsers();
+
+                var inactiveUsers = userDAL.GetInactiveUsers();
+
+
+                var urvm = Mapper.Map<UserBE, UserViewModel>(userDAL.GetUserReport());
+
+                UserReportViewModel userReportViewModel = new UserReportViewModel()
+                {
+                    Users = urvm.ToList(),
+                    InactiveUsers = inactiveUsers,
+                    TotalUsers = totalUsers
+                };
+
+                return userReportViewModel;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(Messages.Generic_Error);
+            }
+        }
+
         public UserViewModel LogIn(UserViewModel viewModel)
         {
             try
@@ -313,12 +342,22 @@ namespace BLL.BLLs
                 UserBE userLogin = new UserBE();
                 Encryptor encryptor = new Encryptor();
                 DVVerifier dVVerifier = new DVVerifier();
+                UserDAL userDAL = new UserDAL();
                 userLogin = CheckUserName(userBE);
                 if (userLogin.Id != Guid.Empty)
                 {
                     if (encryptor.CheckEncryption(encryptor.Encrypt(viewModel.Password), userLogin.Password))
                     {
+                        
+
+                        if(userLogin.Contract != null && userLogin.Contract.ExpirationDate < DateTime.Now)
+                        {
+                            userDAL.DeleteContract(userLogin.Id);
+                            userLogin.Contract = null;
+                        }
+
                         userLogin.Permissions = permissionBLL.GetUserPermission(userLogin);
+
                         if (VerifyLoginPermission(userLogin.Permissions))
                         {
                             if (!userLogin.Blocked)
@@ -331,7 +370,10 @@ namespace BLL.BLLs
 
                                 dVVerifier.DVVerify();
 
-                                userLogin.Language = new LanguageBLL().GetUserLanguage(userLogin);
+                                var language = new LanguageBLL().GetById(userLogin.Language.Id);
+
+
+                                userLogin.Language = Mapper.Map<LanguageViewModel, LanguageBE>(language);
 
                                 UserViewModel uservm = Mapper.Map<UserBE, UserViewModel>(userLogin);
 
@@ -496,11 +538,13 @@ namespace BLL.BLLs
             {
                 if(viewModel.Password == viewModel.ConfirmPassword)
                 {
+                    PermissionsBLL permissionBLL = new PermissionsBLL();
                     UserDAL userDAL = new UserDAL();
                     BinnacleSL binnacleSL = new BinnacleSL();
                     UserBE userBE = new UserBE();
                     userBE.UserName = viewModel.UserName;
                     userBE = CheckUserName(userBE);
+                    DVVerifier dvvv = new DVVerifier();
 
                     if (CacheManager.GetWithTimeout("ResetPassword" + userBE.Id.ToString()) != null)
                     {
@@ -511,12 +555,28 @@ namespace BLL.BLLs
                         {
                             Encryptor encryptor = new Encryptor();
                             userBE.Password = encryptor.Encrypt(viewModel.Password);
-                            userDAL.Update(userBE);
-                            binnacleSL.AddBinnacle(new BinnacleBE()
+
+                            userBE.Permissions = permissionBLL.GetUserPermission(userBE);
+
+                            if (userDAL.Update(userBE))
                             {
-                                User = userBE,
-                                Description = "UpdatePassword"
-                            });
+                                UserDAL userdal = new UserDAL();
+                                var userDVH = userdal.GetDVHEntity(userBE.Id);
+                                userDVH.DVH = dvvv.DVHCalculate(userDVH);
+                                userdal.SetDVH(userDVH);
+                                dvvv.DVCalculate("UserDAL");
+
+                                binnacleSL.AddBinnacle(new BinnacleBE()
+                                {
+                                    User = userBE,
+                                    Description = "UpdatePassword"
+                                });
+                            }
+                            else
+                            {
+                                throw new BusinessException(Messages.ErrorUpdatePassword);
+                            }
+                           
                         }
                         else
                         {

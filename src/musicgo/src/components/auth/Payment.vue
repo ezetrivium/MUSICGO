@@ -4,11 +4,11 @@
             
                 <div style="text-align:center;padding-top:50px;" v-show="loading"> 
                     <b-spinner style=" width: 5rem; height: 5rem; margin-top: 100px; margin-bottom:100px" label="Loading..."  ></b-spinner>
-                    <h4 style="color:white">Por favor no cierre la ventana mientras se completa el proceso</h4>
+                    <h4 style="color:white">{{$t('do_not_close_the_window')}}</h4>
                 </div>
 
                 <div style="text-align:center; color:white;padding-top:50px;" v-show="!loading">
-                    <h4>{{message}}</h4>
+                    <h4>{{$t(message)}}</h4>
                     <b-icon icon="check-circle" style="padding-top:20px; width: 120px; height: 120px;" variant="danger" v-show="showAlert"></b-icon>
                     <b-icon icon="check-circle" style="padding-top:20px; width: 120px; height: 120px;" variant="success" v-show="!showAlert" ></b-icon>
                 </div>

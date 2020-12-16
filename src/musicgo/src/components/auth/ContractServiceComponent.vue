@@ -4,14 +4,14 @@
     <b-row>
         <b-col>
             <div>
-                <b-alert class ="alert-form" style="margin-top:20px" :variant="variant" dismissible v-model="showAlert">{{message}}</b-alert>
+                <b-alert class ="alert-form" style="margin-top:20px" :variant="variant" dismissible v-model="showAlert">{{$t(message)}}</b-alert>
             </div> 
         <b-card  class="container-form" >
         
             <b-card-title class="form-title">
                 <b-row>
                     <b-col>
-                        <h2>Contratar Servicio</h2>
+                        <h2>{{ $t("contract_service") }}</h2>
                     </b-col>
 
                 </b-row>
@@ -40,7 +40,7 @@
                                 {{artistService.Description}}
                             </b-card-text> -->
 
-                            <b-button  href="#" variant="primary" @click="getPreference($event.target, artistService)">Contratar</b-button>
+                            <b-button  href="#" variant="primary" @click="getPreference($event.target, artistService)">{{ $t("contract") }}</b-button>
                         </b-card>
                     </b-col>
                     <b-col>
@@ -57,7 +57,7 @@
                                  {{userService.Description}}
                             </b-card-text> -->
 
-                            <b-button href="#" variant="primary" @click="getPreference($event.target,userService)">Contratar</b-button>
+                            <b-button href="#" variant="primary" @click="getPreference($event.target,userService)">{{ $t("contract") }}</b-button>
                         </b-card>
                     </b-col>
                 </b-row>
@@ -102,7 +102,7 @@
                             class="service-card"
                             >
                             <b-card-text>
-                                {{serviceSelected.Description}}
+                                {{$t(serviceSelected.Description)}}
                             </b-card-text>
                             <div ref="MPButton" >
                                 

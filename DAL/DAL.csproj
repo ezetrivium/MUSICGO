@@ -44,13 +44,20 @@
     <Compile Include="DBContext.cs" />
     <Compile Include="Interfaces\IDAL.cs" />
     <Compile Include="Interfaces\IDV.cs" />
+    <Compile Include="Mappers\AlbumDAL.cs" />
+    <Compile Include="Mappers\BackupDAL.cs" />
     <Compile Include="Mappers\BinnacleDAL.cs" />
+    <Compile Include="Mappers\CategoryDAL.cs" />
+    <Compile Include="Mappers\ClaimDAL.cs" />
     <Compile Include="Mappers\ContractDAL.cs" />
     <Compile Include="Mappers\DVDAL.cs" />
     <Compile Include="Mappers\LanguageDAL.cs" />
     <Compile Include="Mappers\PermissionDAL.cs" />
     <Compile Include="Mappers\ServiceDAL.cs" />
+    <Compile Include="Mappers\SongDAL.cs" />
+    <Compile Include="Mappers\StateDAL.cs" />
     <Compile Include="Mappers\UserDAL.cs" />
+    <Compile Include="Mappers\VoteDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

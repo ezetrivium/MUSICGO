@@ -4,6 +4,7 @@ import { UserViewModel } from '../classes/UserViewModel';
 import { RecoverPasswordViewModel } from '../classes/RecoverPasswordViewModel';
 import { AuthenticationViewModel } from '../classes/AuthenticationViewModel';
 import store  from '../store/store';
+import { UserReportViewModel } from '../classes/UserReportViewModel';
 
 
 export class UserService implements IService<UserViewModel> {
@@ -31,8 +32,21 @@ export class UserService implements IService<UserViewModel> {
     }
 
     get(): AxiosPromise<UserViewModel[]> {
+        throw new Error("Method not implemented.");
+    }
+
+    getReport(): AxiosPromise<UserReportViewModel> {
         Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
-        return Axios.get(this.url + 'users/get');
+        return Axios.get(this.url + 'users/getreport');
+    }
+
+    getRefresh(refresh:boolean): AxiosPromise<UserViewModel[]> {
+        Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken
+        return Axios.get(this.url + 'users/get',{
+            params: {
+                refresh : refresh
+            }
+        });
     }
     getById(obj: UserViewModel): AxiosPromise<UserViewModel> {
         Axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getToken

@@ -42,14 +42,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Entities\AlbumBE.cs" />
+    <Compile Include="Entities\BackupDataBE.cs" />
     <Compile Include="Entities\BinnacleBE.cs" />
+    <Compile Include="Entities\CategoryBE.cs" />
+    <Compile Include="Entities\ClaimBE.cs" />
     <Compile Include="Entities\ContractBE.cs" />
     <Compile Include="Entities\DVVBE.cs" />
     <Compile Include="Entities\LanguageBE.cs" />
     <Compile Include="Entities\PermissionBE.cs" />
     <Compile Include="Entities\PermissionsGroupBE.cs" />
     <Compile Include="Entities\ServiceBE.cs" />
+    <Compile Include="Entities\SongBE.cs" />
+    <Compile Include="Entities\StateBE.cs" />
     <Compile Include="Entities\UserBE.cs" />
+    <Compile Include="Entities\VoteBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
