@@ -16,7 +16,7 @@
     "eslint": "^6.8.0",
     "file-saver": "^2.0.5",
     "guid-typescript": "^1.0.9",
-    "jquery": "^1.12.4",
+    "jquery": "^3.5.0",
     "jspdf": "^2.2.0",
     "jspdf-autotable": "^3.5.13",
     "liquor-tree": "^0.2.70",
